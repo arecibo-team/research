@@ -1,0 +1,339 @@
+{
+ "name": "Ember Ledger",
+ "generated": "2026-11-14T14:39+00:00",
+ "area": "Romania",
+ "bbox": [
+  20.0,
+  43.4,
+  30.0,
+  48.4
+ ],
+ "grid": {
+  "lat0": 43.0,
+  "lon0": 20.0,
+  "size": 0.02
+ },
+ "epoch": "2000-01-01",
+ "years": [
+  2000,
+  2025
+ ],
+ "viirs_start": "2012-01-20",
+ "data_start": "2000-11-01",
+ "data_end": "2025-12-31",
+ "last_full_year": 2025,
+ "aqua_start": "2002-07-04",
+ "overlap": [
+  2013,
+  2022
+ ],
+ "ratio_by_month": [
+  4.8584,
+  2.873,
+  2.5821,
+  3.2433,
+  5.3433,
+  4.0746,
+  2.4613,
+  2.8573,
+  2.4308,
+  2.3564,
+  2.5042,
+  4.9464
+ ],
+ "terra_factor_by_month": [
+  6.5238,
+  4.522,
+  2.7442,
+  2.197,
+  1.8916,
+  1.7155,
+  1.7155,
+  1.7603,
+  2.1732,
+  3.3668,
+  4.2669,
+  4.1163
+ ],
+ "loyo": [
+  {
+   "year": 2013,
+   "predicted": 7145,
+   "observed": 7456,
+   "error_pct": -4.2
+  },
+  {
+   "year": 2014,
+   "predicted": 9293,
+   "observed": 8899,
+   "error_pct": 4.4
+  },
+  {
+   "year": 2015,
+   "predicted": 7437,
+   "observed": 7932,
+   "error_pct": -6.2
+  },
+  {
+   "year": 2016,
+   "predicted": 8194,
+   "observed": 8389,
+   "error_pct": -2.3
+  },
+  {
+   "year": 2017,
+   "predicted": 10186,
+   "observed": 10180,
+   "error_pct": 0.1
+  },
+  {
+   "year": 2018,
+   "predicted": 7176,
+   "observed": 7237,
+   "error_pct": -0.8
+  },
+  {
+   "year": 2019,
+   "predicted": 12107,
+   "observed": 12348,
+   "error_pct": -2.0
+  },
+  {
+   "year": 2020,
+   "predicted": 9784,
+   "observed": 8807,
+   "error_pct": 11.1
+  },
+  {
+   "year": 2021,
+   "predicted": 6286,
+   "observed": 6126,
+   "error_pct": 2.6
+  },
+  {
+   "year": 2022,
+   "predicted": 8267,
+   "observed": 7740,
+   "error_pct": 6.8
+  }
+ ],
+ "loyo_mape_pct": 4.0,
+ "counts": {
+  "modis_all": 112183,
+  "modis_kept": 105292,
+  "snpp_all": 202091,
+  "snpp_kept": 167848,
+  "n20_all": 100468,
+  "n20_kept": 81794
+ },
+ "hotspots_per_year": {
+  "2000": 71,
+  "2001": 5149,
+  "2002": 1632,
+  "2003": 2465,
+  "2004": 5111,
+  "2005": 6120,
+  "2006": 5433,
+  "2007": 4919,
+  "2008": 8260,
+  "2009": 4641,
+  "2010": 4457,
+  "2011": 9527,
+  "2012": 35317,
+  "2013": 17210,
+  "2014": 19378,
+  "2015": 17956,
+  "2016": 20124,
+  "2017": 22818,
+  "2018": 27959,
+  "2019": 48815,
+  "2020": 36707,
+  "2021": 27441,
+  "2022": 33868,
+  "2023": 12012,
+  "2024": 16678,
+  "2025": 20674
+ },
+ "static_mask_cells": 2249,
+ "counties": [
+  {
+   "id": 0,
+   "name": "Alba"
+  },
+  {
+   "id": 1,
+   "name": "Arad"
+  },
+  {
+   "id": 2,
+   "name": "Arges"
+  },
+  {
+   "id": 3,
+   "name": "Bacau"
+  },
+  {
+   "id": 4,
+   "name": "Bihor"
+  },
+  {
+   "id": 5,
+   "name": "Bistrita-Nasaud"
+  },
+  {
+   "id": 6,
+   "name": "Botosani"
+  },
+  {
+   "id": 7,
+   "name": "Braila"
+  },
+  {
+   "id": 8,
+   "name": "Brasov"
+  },
+  {
+   "id": 9,
+   "name": "Bucharest"
+  },
+  {
+   "id": 10,
+   "name": "Buzau"
+  },
+  {
+   "id": 11,
+   "name": "Calarasi"
+  },
+  {
+   "id": 12,
+   "name": "Caras-Severin"
+  },
+  {
+   "id": 13,
+   "name": "Cluj"
+  },
+  {
+   "id": 14,
+   "name": "Constanta"
+  },
+  {
+   "id": 15,
+   "name": "Covasna"
+  },
+  {
+   "id": 16,
+   "name": "Dambovita"
+  },
+  {
+   "id": 17,
+   "name": "Dolj"
+  },
+  {
+   "id": 18,
+   "name": "Galati"
+  },
+  {
+   "id": 19,
+   "name": "Giurgiu"
+  },
+  {
+   "id": 20,
+   "name": "Gorj"
+  },
+  {
+   "id": 21,
+   "name": "Harghita"
+  },
+  {
+   "id": 22,
+   "name": "Hunedoara"
+  },
+  {
+   "id": 23,
+   "name": "Ialomita"
+  },
+  {
+   "id": 24,
+   "name": "Iasi"
+  },
+  {
+   "id": 25,
+   "name": "Ilfov"
+  },
+  {
+   "id": 26,
+   "name": "Maramures"
+  },
+  {
+   "id": 27,
+   "name": "Mehedinti"
+  },
+  {
+   "id": 28,
+   "name": "Mures"
+  },
+  {
+   "id": 29,
+   "name": "Neamt"
+  },
+  {
+   "id": 30,
+   "name": "Olt"
+  },
+  {
+   "id": 31,
+   "name": "Prahova"
+  },
+  {
+   "id": 32,
+   "name": "Salaj"
+  },
+  {
+   "id": 33,
+   "name": "Satu Mare"
+  },
+  {
+   "id": 34,
+   "name": "Sibiu"
+  },
+  {
+   "id": 35,
+   "name": "Suceava"
+  },
+  {
+   "id": 36,
+   "name": "Teleorman"
+  },
+  {
+   "id": 37,
+   "name": "Timis"
+  },
+  {
+   "id": 38,
+   "name": "Tulcea"
+  },
+  {
+   "id": 39,
+   "name": "Valcea"
+  },
+  {
+   "id": 40,
+   "name": "Vaslui"
+  },
+  {
+   "id": 41,
+   "name": "Vrancea"
+  }
+ ],
+ "events": 90969,
+ "formats": {
+  "cd_*.bin": "little-endian uint16 triples: row, col, day (days since epoch); cell centre = lat0+(row+.5)*size, lon0+(col+.5)*size",
+  "cellcounty.bin": "uint16 triples: row, col, county id (255 = outside)",
+  "hotspots/<year>.bin": "20-byte records: f32 lat, f32 lon, f32 frp, u16 day, u16 time(HHMM UTC), u8 sensor(0 Terra,1 Aqua,2 S-NPP,3 NOAA-20), u8 type, u8 confidence(0-100), u8 flags(1 masked static, 2 kept)",
+  "events.bin": "20-byte records: f32 lat, f32 lon, f32 frp sum, u16 start day, u16 duration days, u16 detections, u16 approx 375 m pixels"
+ },
+ "sources": {
+  "firms": "NASA FIRMS MODIS C6.x and VIIRS 375 m (S-NPP, NOAA-20) per-country archives",
+  "counties": "geoBoundaries ROU ADM1 (World Bank), CC BY 4.0"
+ }
+}
