@@ -9,6 +9,7 @@ This repo holds the research for the team's NASA Space Apps 2026 entry, challeng
 - `docs/project-idea.md`: the current project proposal, harmonization method, features, open questions.
 - `docs/data-findings-romania.md`: first numbers from real FIRMS data.
 - `docs/feature-catalog.md`: 37 candidate features with effort, judging fit and how to promote each, plus the pitch plan.
+- `docs/interface-inspiration.md`: state of the art of fire apps, patterns to borrow per screen, wireframe, libraries.
 - `docs/literature-study.md`: 13 verified papers with takeaways and a weekend reading order.
 - `docs/data-sources-extended.md`: sources for validation, context, impact and future sensors, with status.
 - `Wildfire Data Sources.md`: broad catalog of fire-related datasets (written with prediction in mind).

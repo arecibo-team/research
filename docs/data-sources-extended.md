@@ -88,5 +88,8 @@ Gaps found today:
 |---|---|---|
 | FIRMS Fire Map | Points on a map, recent days | No harmonized history, no calendar for an arbitrary area |
 | EFFIS | European burnt areas, danger forecast, country statistics | Excludes agricultural-only fires and fires under 30 ha, no hotspot calendar |
-| GWIS country profiles | Country-level fire statistics | Country level only; to verify whether it harmonizes sensors |
-| Global Forest Watch fire dashboards | Fire alerts by area | To verify; as far as we know, no MODIS-VIIRS harmonization |
+| GWIS country profiles | Country and sub-country fire statistics, seasonality charts, current year vs 10-year average | Based on burned area (MCD64A1) and GlobFire, not hotspots; no drawn areas |
+| Global Forest Watch fire dashboards | Fire alerts by area, weekly counts vs historical average | MODIS (2000-) and VIIRS (2012-) offered as separate products, not harmonized |
+| FIRECAM (Earth Engine app) | Daily FIRMS time series for a drawn region | MODIS only, emissions focus |
+
+See `docs/interface-inspiration.md` for the full survey of existing apps.
