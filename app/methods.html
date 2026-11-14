@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ember Ledger Method</title>
+<meta name="description" content="How Ember Ledger harmonizes MODIS and VIIRS active fire detections, how it is validated, and its limits.">
+<link rel="stylesheet" href="css/app.css">
+<style>
+  .doc { max-width: 860px; margin: 0 auto; padding: 1rem 16px 3rem; }
+  .doc h1 { font-size: 1.7rem; margin: .6rem 0 .3rem; }
+  .doc h2 { font-size: 1.15rem; margin: 1.8rem 0 .4rem; }
+  .doc p, .doc li { line-height: 1.6; }
+  .doc code { font-family: var(--mono); font-size: .86em; background: var(--accent-soft); padding: 1px 5px; border-radius: 4px; }
+  .doc pre { background: var(--surface); border: 1px solid var(--line); padding: .8rem; border-radius: 8px; overflow-x: auto; font-size: .8rem; }
+  .doc table { margin: .6rem 0; }
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="./"><span class="mark" aria-hidden="true"></span><span><strong>Ember Ledger</strong><span class="tag">Method and validation</span></span></a>
+  <nav id="tabs"><a href="./">← Back to the app</a></nav>
+</header>
+<div class="doc">
+  <h1>Method and validation</h1>
+  <p class="hint" id="gen"></p>
+
+  <h2>The problem</h2>
+  <p>NASA's MODIS sensors (Terra since November 2000, Aqua since July 2002) give the longest record of active fires.
+    VIIRS (S-NPP since January 2012, NOAA-20, NOAA-21) sees far more, because its pixels are 375 m instead of 1 km.
+    Stitching the two records invents a jump in 2012, and MODIS science data is planned to end in 2027.
+    Ember Ledger expresses the whole record in one unit so that the sensor no longer matters.</p>
+
+  <h2>Data</h2>
+  <ul>
+    <li><b>NASA FIRMS</b> per-country archives for Romania: MODIS Collection 6.x (Terra, Aqua) and VIIRS 375 m (S-NPP, NOAA-20), <span id="n-records"></span> records, <span id="span"></span>.</li>
+    <li><b>County boundaries</b>: geoBoundaries ROU ADM1 (World Bank source), CC BY 4.0.</li>
+    <li>Basemap: Esri World Gray Canvas.</li>
+  </ul>
+
+  <h2>1. Cleaning</h2>
+  <ul>
+    <li>Keep presumed vegetation fires (<code>type = 0</code>). Drop MODIS detections with confidence below 30 and VIIRS low-confidence detections.</li>
+    <li><b>Static heat sources.</b> Early MODIS years carry no flag for industry and gas flares. We build a mask from every location VIIRS ever flags as
+      static land or offshore (types 2 and 3), buffered by one 0.01° cell (<span id="n-mask"></span> cells), and apply it to all sensors and years.</li>
+  </ul>
+
+  <h2>2. A common unit: fire cell-days</h2>
+  <p>Detections are snapped to a fixed 0.02° grid (about 2 km) and each cell counts at most once per day. This removes most of the
+    "one fire becomes many small pixels" effect before any statistics: a fire that VIIRS splits into ten 375 m pixels and MODIS sees as two
+    1 km pixels is one cell-day for both.</p>
+
+  <h2>3. Harmonization</h2>
+  <ul>
+    <li><b>Reference sensor: VIIRS S-NPP only.</b> Mixing NOAA-20 into the reference created a second break in 2018 and raised the validation error from about 4% to about 28%.</li>
+    <li><b>Per-month ratio</b> of VIIRS to MODIS cell-days, fitted on the full overlap years <span id="overlap"></span>. Small summer stubble fires and winter fires are missed more by MODIS, so the ratio varies by month:</li>
+  </ul>
+  <div id="ratio" class="chart"></div>
+  <ul>
+    <li><b>Terra-only months</b> (before Aqua, July 2002) are first scaled by a per-month (Terra + Aqua) / Terra factor fitted on 2003–2011.</li>
+    <li>From 20 January 2012 the series is <b>observed</b> VIIRS; before that it is <b>modelled</b> from MODIS. The app marks the difference everywhere.</li>
+  </ul>
+
+  <h2>4. Validation</h2>
+  <p>Leave-one-year-out on the overlap: for each year, fit the ratios on the other years, predict that year's VIIRS total from MODIS, compare.
+    Mean absolute error on yearly totals for Romania: <b id="mape"></b>.</p>
+  <div id="loyo" class="chart"></div>
+  <p>The app repeats this check for every selected area and shows it as a trust badge and as the error band on modelled years.
+    Small areas with few fires get lower trust.</p>
+
+  <h2>5. What the app computes</h2>
+  <ul>
+    <li><b>Is this normal?</b> The selected month against the same month in every other year: rank, ratio to the median, and the 10th–90th percentile range.
+      A month still in progress is compared day for day (1–14 October against 1–14 October of other years).</li>
+    <li><b>Trend</b>: Mann-Kendall test and Sen's slope on yearly totals of complete years.</li>
+    <li><b>Season window</b>: days of the year when 10%, 50% and 90% of the year's activity is reached.</li>
+    <li><b>Recurring burn sites</b>: number of years 2012–2025 in which each 2 km cell had a fire (VIIRS). <b>Backtest</b>: cells picked from 2012–2019 only,
+      share of 2020–2025 fire days they capture, and lift over picking cells at random. For Romania, cells burning in at least 5 of 8 years are 5% of burned
+      cells and caught 18% of later fire days (3.5×).</li>
+    <li><b>Weekly workload and county outlook</b>: per week of the year, median and 90th percentile of harmonized activity over the last 10 complete years;
+      counties ranked by the median for the next 6 weeks. This is a planning aid built from fire history, not a dispatch or resource-optimization system.</li>
+    <li><b>Fire events</b>: VIIRS S-NPP detections within about 750 m on the same or the next day are grouped into one fire (union-find).
+      Footprint is the number of distinct 375 m pixels × 0.14 km², an approximation, not a burned-area map.</li>
+  </ul>
+
+  <h2>Limits</h2>
+  <ul>
+    <li>Ratios are fitted for all of Romania by month, not per land cover or region; the local trust badge shows where this works less well.</li>
+    <li>Satellites pass at fixed times (about 10:30 and 13:30 local, plus night passes); short fires between passes are missed. Counts are a lower bound.</li>
+    <li>NRT data for the current year has no static-source type flag; the archive-based mask is used instead.</li>
+    <li>MODIS files mix product versions (6.03, 6.2, 61.03). We have not tested whether this matters.</li>
+    <li>Terra and Aqua orbits drifted in recent years, which may shift overpass times; the validation error stays small through 2022.</li>
+  </ul>
+
+  <h2 id="nrt">Adding the current year</h2>
+  <p>FIRMS publishes country archives only for complete years. To add the current year, request a free MAP_KEY from FIRMS and run:</p>
+  <pre>FIRMS_MAP_KEY=… python3 app/pipeline/fetch_current.py --raw RAW_DIR --counties ro_adm1.geojson
+python3 app/pipeline/build.py --raw RAW_DIR --counties ro_adm1.geojson</pre>
+  <p>The app then shows the partial year automatically, compares the month in progress day for day, and keeps trends and baselines on complete years.</p>
+
+  <h2>Use of AI</h2>
+  <p>The code of this app and its data pipeline were written with the help of an AI assistant (Claude) and reviewed by the team. The idea, the choice of
+    problem and the method decisions are the team's. No AI-generated images are used.</p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6.16/dist/plot.umd.min.js"></script>
+<script>
+"use strict";
+fetch("data/meta.json").then((r) => r.json()).then((m) => {
+  const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim(), fmt = d3.format(",");
+  const total = Object.values(m.hotspots_per_year).reduce((a, b) => a + b, 0);
+  document.getElementById("gen").textContent = `Numbers on this page are read from the data build of ${m.generated.slice(0, 10)}.`;
+  document.getElementById("n-records").textContent = fmt(total);
+  document.getElementById("span").textContent = `${m.data_start} to ${m.data_end}`;
+  document.getElementById("n-mask").textContent = fmt(m.static_mask_cells);
+  document.getElementById("overlap").textContent = `${m.overlap[0]}–${m.overlap[1]}`;
+  document.getElementById("mape").textContent = m.loyo_mape_pct + "%";
+  const M = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  document.getElementById("ratio").append(Plot.plot({ height: 200, marginLeft: 40, x: { domain: M, label: null }, y: { grid: true, label: "VIIRS ÷ MODIS cell-days" },
+    marks: [Plot.barY(m.ratio_by_month.map((v, i) => ({ m: M[i], v })), { x: "m", y: "v", fill: css("--viirs"), tip: true }), Plot.ruleY([0])] }));
+  const rows = m.loyo.flatMap((d) => [{ y: String(d.year), k: "observed (VIIRS)", v: d.observed }, { y: String(d.year), k: "predicted from MODIS", v: d.predicted }]);
+  document.getElementById("loyo").append(Plot.plot({ height: 230, marginLeft: 56, fx: { label: null }, x: { axis: null }, y: { grid: true, label: "fire cell-days" },
+    color: { domain: ["observed (VIIRS)", "predicted from MODIS"], range: [css("--viirs"), css("--modis")], legend: true },
+    marks: [Plot.barY(rows, { fx: "y", x: "k", y: "v", fill: "k", tip: true }), Plot.ruleY([0])] }));
+}).catch((e) => { document.getElementById("gen").textContent = "Could not load data/meta.json: " + e.message; });
+</script>
+</body>
+</html>

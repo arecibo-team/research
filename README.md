@@ -6,6 +6,7 @@ Team research for NASA Space Apps 2026, challenge
 
 ## Contents
 
+- [`app/`](app/): **Ember Ledger**, the hackathon web app (harmonized calendar, prevention, planning, fires, exports). See its README.
 - [`showcase/`](showcase/): research website with data previews, feature triage and team decisions (see its README to run it).
 - [`docs/project-idea.md`](docs/project-idea.md): project proposal, harmonization method, features, timeline, open questions.
 - [`docs/feature-catalog.md`](docs/feature-catalog.md): candidate features, how to promote each, video and slide plan.
