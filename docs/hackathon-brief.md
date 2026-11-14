@@ -64,7 +64,8 @@ the project uses.
   `https://firms.modaps.eosdis.nasa.gov/data/country/<sensor>/<year>/<sensor>_<year>_<Country>.csv`
   with `<sensor>` = `modis`, `viirs-snpp`, `viirs-jpss1` (NOAA-20). Example:
   `.../data/country/modis/2023/modis_2023_Romania.csv`. The directory listing itself returns 404,
-  so build the URLs directly. NOAA-21 naming is not checked yet (probably `viirs-jpss2`).
+  so build the URLs directly. Years available: 2000 to 2025. **2026 is not published yet** and NOAA-21 is
+  not offered (`viirs-jpss2` and `viirs-noaa21` both 404), so the current year needs the API.
 - **Area API, needs a free MAP_KEY:** `/api/area/csv/[MAP_KEY]/[SOURCE]/[west,south,east,north]/[DAY_RANGE]/[DATE]`.
   DAY_RANGE is 1 to 5 days. Sources include standard-processing archives (`MODIS_SP`, `VIIRS_SNPP_SP`,
   `VIIRS_NOAA20_SP`, `VIIRS_NOAA21_SP`) and near-real-time (`*_NRT`). Limit: 5000 transactions per
@@ -93,6 +94,8 @@ VIIRS columns: same layout but `bright_ti4`, `bright_ti5`, `satellite` = `N` (S-
 | VIIRS NOAA-20 / NOAA-21 | 375 m | 2018 / 2023 |
 
 - Aqua and the VIIRS platforms cross the equator around 13:30 and 01:30 local; Terra around 10:30 and 22:30.
+- NASA plans to stop Terra MODIS science data around Feb 2027 and Aqua around Sep 2027
+  (LAADS DAAC MODIS-to-VIIRS transition page; dates have moved before).
 - Terra and Aqua orbits have been drifting in recent years, which shifts overpass times; check how far
   before trusting post-2020 MODIS counts in the calibration.
 

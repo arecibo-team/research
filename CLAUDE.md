@@ -8,6 +8,9 @@ This repo holds the research for the team's NASA Space Apps 2026 entry, challeng
 - `docs/hackathon-brief.md`: challenge objectives, FIRMS data access, submission rules, judging.
 - `docs/project-idea.md`: the current project proposal, harmonization method, features, open questions.
 - `docs/data-findings-romania.md`: first numbers from real FIRMS data.
+- `docs/feature-catalog.md`: 37 candidate features with effort, judging fit and how to promote each, plus the pitch plan.
+- `docs/literature-study.md`: 13 verified papers with takeaways and a weekend reading order.
+- `docs/data-sources-extended.md`: sources for validation, context, impact and future sensors, with status.
 - `Wildfire Data Sources.md`: broad catalog of fire-related datasets (written with prediction in mind).
 - `docs/source/`: raw text of the challenge page, submission guide and judging criteria.
 
@@ -27,7 +30,8 @@ This repo holds the research for the team's NASA Space Apps 2026 entry, challeng
 
 - The challenge page is a JS-rendered Next.js site: plain HTML fetchers see an empty page. `curl` the page
   and decode the `self.__next_f.push` payload to read it.
-- FIRMS per-country yearly CSVs download without a key (URL pattern in the brief). The FIRMS area API needs
+- FIRMS per-country yearly CSVs download without a key (URL pattern in the brief) but stop at 2025;
+  2026 and NOAA-21 need the API and a MAP_KEY. The FIRMS area API needs
   a MAP_KEY and returns at most 5 days per call.
 - Facts marked "to verify" in the brief are from general knowledge, not checked against a source.
 - Record decisions in `docs/` as they are made, and update `docs/project-idea.md` when the team settles
