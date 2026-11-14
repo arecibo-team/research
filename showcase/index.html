@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Arecibo Research Showcase</title>
+<meta name="description" content="Research, data previews and team decisions for the NASA Space Apps 2026 MODIS/VIIRS hot spot harmonization challenge.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <span class="mark" aria-hidden="true"></span>
+    <div>
+      <strong>Arecibo research</strong>
+      <span class="sub">Harmonization of MODIS and VIIRS Hot Spots · Space Apps 2026</span>
+    </div>
+  </div>
+  <div class="deadline" id="deadline" title="Submission closes Sunday 15 Nov 2026, 23:59 Bucharest time"></div>
+  <nav id="nav" aria-label="Sections">
+    <a href="#overview">Overview</a>
+    <a href="#data">FIRMS data</a>
+    <a href="#sources">Data sources</a>
+    <a href="#ideas">Features</a>
+    <a href="#decisions">Decisions</a>
+    <a href="#library">Library</a>
+  </nav>
+</header>
+
+<main>
+<!-- OVERVIEW -->
+<section id="view-overview" class="view">
+  <div class="intro">
+    <h1>One consistent fire record for any area, 2000 to today</h1>
+    <p class="lede">The challenge: harmonize NASA's MODIS and VIIRS hotspots into a burning-activity calendar in a web app,
+      so the sensor no longer matters. This page gathers everything in the repo so far and lets the team decide what to build.</p>
+  </div>
+  <div class="kpis" id="kpis"></div>
+  <div class="grid two">
+    <article class="card">
+      <h2>The problem in one chart</h2>
+      <p class="hint">Yearly vegetation hotspots in Romania. Toggle between stitching raw sensors together and the prototype harmonization.</p>
+      <div class="seg" id="cliff-toggle" role="group" aria-label="Series">
+        <button data-v="raw" class="on">Raw, stitched</button>
+        <button data-v="harm">Harmonized (prototype)</button>
+      </div>
+      <div id="cliff-mini" class="chart"></div>
+    </article>
+    <article class="card">
+      <h2>What we found so far</h2>
+      <ul class="findings" id="findings"></ul>
+    </article>
+  </div>
+  <div class="grid two">
+    <article class="card">
+      <h2>Decision progress</h2>
+      <div id="progress"></div>
+      <p><a href="#decisions">Open decisions →</a> · <a href="#ideas">Triage features →</a></p>
+    </article>
+    <article class="card">
+      <h2>How we'll be judged</h2>
+      <ul class="criteria">
+        <li><b>Impact</b> significance and reach of the problem solved</li>
+        <li><b>Creativity</b> novel approach or meaningful improvement</li>
+        <li><b>Validity</b> scientifically sound, feasible, usable</li>
+        <li><b>Relevance</b> answers the challenge, NASA data at the core</li>
+        <li><b>Presentation</b> project page and demo (30 s video or 7 slides)</li>
+      </ul>
+    </article>
+  </div>
+</section>
+
+<!-- FIRMS DATA -->
+<section id="view-data" class="view">
+  <div class="intro">
+    <h1>FIRMS hotspots for Romania, 2000–2025</h1>
+    <p class="lede">Real data from the FIRMS per-country files: <span id="data-count"></span>. Built by
+      <code>showcase/scripts/build_data.py</code>. The harmonization shown here is a prototype for discussion.</p>
+  </div>
+
+  <article class="card">
+    <h2>What one record looks like</h2>
+    <p class="hint">The first rows of the 2023 files, exactly as downloaded. Hover a column name for its meaning.</p>
+    <div class="grid two">
+      <div><h3>MODIS (1 km)</h3><div class="table-wrap" id="rows-modis"></div></div>
+      <div><h3>VIIRS S-NPP (375 m)</h3><div class="table-wrap" id="rows-snpp"></div></div>
+    </div>
+  </article>
+
+  <article class="card">
+    <h2>Every hotspot on a map</h2>
+    <div class="controls">
+      <label>Year <select id="map-year"></select></label>
+      <div class="seg" id="map-sensor" role="group" aria-label="Sensor">
+        <button data-v="M">MODIS</button><button data-v="V">VIIRS</button><button data-v="both" class="on">Both</button>
+      </div>
+      <div class="seg" id="map-type" role="group" aria-label="Type">
+        <button data-v="veg" class="on">Vegetation</button><button data-v="static">Static sources</button><button data-v="all">All</button>
+      </div>
+      <span class="hint" id="map-stats"></span>
+    </div>
+    <div class="map" id="fire-map"></div>
+    <div class="legend" id="map-legend"></div>
+  </article>
+
+  <article class="card">
+    <h2>The burning calendar</h2>
+    <p class="hint">Years as rows, months as columns. "m" marks months whose harmonized value is modelled from MODIS rather than observed by VIIRS.</p>
+    <div class="controls">
+      <label>Show <select id="cal-mode">
+        <option value="stitched">Raw detections, stitched (MODIS → VIIRS in 2012)</option>
+        <option value="harm" selected>Harmonized fire cell-days (prototype)</option>
+        <option value="anom">Anomaly vs monthly median (harmonized)</option>
+        <option value="modis">MODIS detections only</option>
+        <option value="viirs">VIIRS S-NPP detections only</option>
+      </select></label>
+      <label>Colours <select id="cal-scheme">
+        <option value="YlOrRd">Ember (YlOrRd)</option>
+        <option value="Viridis">Viridis</option>
+        <option value="Cividis">Cividis (colour-blind safe)</option>
+      </select></label>
+    </div>
+    <div id="calendar" class="chart"></div>
+  </article>
+
+  <div class="grid two">
+    <article class="card">
+      <h2>Raw vs harmonized, yearly</h2>
+      <div id="cliff-full" class="chart"></div>
+    </article>
+    <article class="card">
+      <h2>Which satellites flew when</h2>
+      <div id="timeline" class="chart"></div>
+      <p class="hint">Dashed ends are NASA's planned MODIS end dates (Terra ~Feb 2027, Aqua ~Sep 2027).</p>
+    </article>
+  </div>
+
+  <div class="grid two">
+    <article class="card">
+      <h2>How many VIIRS fire cell-days per MODIS one?</h2>
+      <p class="hint">Ratio fitted on 2013–2022, per month. Summer and winter fires are smaller, so MODIS misses more of them.</p>
+      <div id="ratio" class="chart"></div>
+    </article>
+    <article class="card">
+      <h2>Does the prototype hold up?</h2>
+      <p class="hint">Leave-one-year-out: predict each overlap year's VIIRS total from MODIS using the other years.</p>
+      <div id="loyo" class="chart"></div>
+    </article>
+  </div>
+
+  <div class="grid two">
+    <article class="card">
+      <h2>Fire strength (FRP) by sensor</h2>
+      <p class="hint">Share of detections by fire radiative power, 2013–2022. VIIRS sees many weak fires MODIS cannot.</p>
+      <div id="frp" class="chart"></div>
+    </article>
+    <article class="card">
+      <h2>Is the season shifting?</h2>
+      <p class="hint">MODIS detections by week of year, early vs recent period (raw, same sensor, normalized).</p>
+      <div id="season" class="chart"></div>
+    </article>
+  </div>
+
+  <div class="grid two">
+    <article class="card">
+      <h2>Human fingerprint: day of week</h2>
+      <p class="hint">VIIRS S-NPP vegetation detections, 2012–2025.</p>
+      <div id="weekday" class="chart"></div>
+    </article>
+    <article class="card">
+      <h2>What's inside the files</h2>
+      <p class="hint">Record types per sensor. Type 2 = industry and other static heat, 3 = offshore. MODIS records rarely carry type 2, so we mask those spots ourselves.</p>
+      <div id="types" class="chart"></div>
+      <p class="hint" id="mask-note"></p>
+    </article>
+  </div>
+</section>
+
+<!-- SOURCES -->
+<section id="view-sources" class="view">
+  <div class="intro">
+    <h1>Data sources and what they look like</h1>
+    <p class="lede">Each card shows the shape of the data and, where we fetched it, a real preview over Romania.
+      Previews are snapshots from NASA GIBS, so the page works offline.</p>
+  </div>
+  <article class="card">
+    <h2>Context layers over Romania</h2>
+    <div class="grid map-side">
+      <div class="map" id="ctx-map"></div>
+      <div>
+        <div id="ctx-list" class="ctx-list" role="radiogroup" aria-label="Layer"></div>
+        <label class="opacity">Opacity <input type="range" id="ctx-opacity" min="0" max="1" step="0.05" value="0.8"></label>
+        <p class="hint" id="ctx-caption"></p>
+      </div>
+    </div>
+  </article>
+  <div class="controls">
+    <div class="seg" id="src-filter" role="group" aria-label="Group"></div>
+  </div>
+  <div id="src-grid" class="cards"></div>
+</section>
+
+<!-- FEATURES -->
+<section id="view-ideas" class="view">
+  <div class="intro">
+    <h1>Features: triage and plan</h1>
+    <p class="lede">Mark each feature Build, Maybe or Skip and give it an owner. The planner adds up effort against the time the team has.
+      Choices are saved in this browser; export them from <a href="#decisions">Decisions</a> to share.</p>
+  </div>
+  <div class="grid two">
+    <article class="card">
+      <h2>Capacity</h2>
+      <div class="controls">
+        <label>People <input type="number" id="cap-people" min="1" max="10" value="4"></label>
+        <label>Hours each <input type="number" id="cap-hours" min="1" max="48" value="16"></label>
+      </div>
+      <div id="capacity"></div>
+      <p class="hint">Effort hours assumed: S = 3, M = 6, L = 12 per feature.</p>
+    </article>
+    <article class="card">
+      <h2>Judging coverage of "Build"</h2>
+      <div id="coverage" class="chart"></div>
+    </article>
+  </div>
+  <div class="controls sticky">
+    <div class="seg" id="feat-tier" role="group" aria-label="Tier">
+      <button data-v="all" class="on">All</button><button data-v="1">Tier 1</button><button data-v="2">Tier 2</button>
+      <button data-v="3">Tier 3</button><button data-v="L">From papers</button><button data-v="4">Vision</button>
+    </div>
+    <div class="seg" id="feat-status" role="group" aria-label="Decision">
+      <button data-v="all" class="on">Any</button><button data-v="build">Build</button><button data-v="maybe">Maybe</button>
+      <button data-v="skip">Skip</button><button data-v="none">Undecided</button>
+    </div>
+  </div>
+  <div id="feat-grid" class="cards"></div>
+</section>
+
+<!-- DECISIONS -->
+<section id="view-decisions" class="view">
+  <div class="intro">
+    <h1>Decisions</h1>
+    <p class="lede">The repo copy (<code>showcase/decisions.json</code>) is the shared record. Your edits stay in this browser
+      until you export them: download the file and commit it, or open a GitHub issue for the team to discuss.</p>
+  </div>
+  <div class="actions">
+    <button id="btn-download" class="primary">Download decisions.json</button>
+    <button id="btn-copy">Copy as Markdown</button>
+    <a id="btn-issue" class="button" target="_blank" rel="noopener">Open as GitHub issue</a>
+    <button id="btn-reset" class="ghost">Reset to repo version</button>
+    <span class="hint" id="diff-note"></span>
+  </div>
+  <div id="q-list" class="cards one"></div>
+</section>
+
+<!-- LIBRARY -->
+<section id="view-library" class="view">
+  <div class="grid lib">
+    <nav class="doc-nav" id="doc-nav" aria-label="Documents"></nav>
+    <article class="card doc" id="doc"></article>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  Data: NASA FIRMS (MODIS C6.x, VIIRS 375 m), NASA GIBS imagery. Basemap © Esri, © OpenStreetMap contributors.
+  This showcase was built with an AI assistant (Claude) for the team to review.
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6.16/dist/plot.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

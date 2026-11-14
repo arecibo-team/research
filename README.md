@@ -6,6 +6,7 @@ Team research for NASA Space Apps 2026, challenge
 
 ## Contents
 
+- [`showcase/`](showcase/): research website with data previews, feature triage and team decisions (see its README to run it).
 - [`docs/project-idea.md`](docs/project-idea.md): project proposal, harmonization method, features, timeline, open questions.
 - [`docs/feature-catalog.md`](docs/feature-catalog.md): candidate features, how to promote each, video and slide plan.
 - [`docs/interface-inspiration.md`](docs/interface-inspiration.md): survey of existing fire and climate apps, interface patterns per screen, wireframe, UI libraries.

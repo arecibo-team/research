@@ -6,6 +6,7 @@ This repo holds the research for the team's NASA Space Apps 2026 entry, challeng
 ## Read first
 
 - `docs/hackathon-brief.md`: challenge objectives, FIRMS data access, submission rules, judging.
+- `showcase/`: static website presenting the research; `showcase/decisions.json` is the team's decision record; `showcase/scripts/build_data.py` rebuilds its data.
 - `docs/project-idea.md`: the current project proposal, harmonization method, features, open questions.
 - `docs/data-findings-romania.md`: first numbers from real FIRMS data.
 - `docs/feature-catalog.md`: 37 candidate features with effort, judging fit and how to promote each, plus the pitch plan.

@@ -1,0 +1,17 @@
+{
+  "_about": "Team decisions recorded in the repo. The showcase loads this file as the shared baseline; local edits stay in the browser until someone exports them and commits this file.",
+  "updated": "2026-11-14",
+  "questions": [
+    {"id":"roles","title":"Who owns what?","why":"Decides how many tier 2-3 features are realistic.","options":["Pipeline + science","Web app","Pitch + demo","Data downloads + MAP_KEY"],"kind":"assign","status":"open","choice":null,"notes":""},
+    {"id":"mapkey","title":"Who requests the FIRMS MAP_KEY today?","why":"2026 data and NOAA-21 are only available through the API.","options":[],"kind":"text","status":"open","choice":null,"notes":""},
+    {"id":"unit","title":"Harmonized unit","why":"Everything downstream is expressed in it.","options":["VIIRS-equivalent fire cell-days (proposed)","MODIS-equivalent hotspot counts","Fire energy (summed FRP)"],"kind":"single","status":"open","choice":null,"notes":"Prototype in the showcase uses VIIRS S-NPP cell-days on a 0.02 deg grid; annual leave-one-year-out error 3.5%."},
+    {"id":"reference","title":"VIIRS reference series","why":"Mixing S-NPP and NOAA-20 created a 2018 break in the prototype.","options":["S-NPP only (proposed)","S-NPP + NOAA-20 union","Average of both"],"kind":"single","status":"open","choice":null,"notes":""},
+    {"id":"method","title":"Harmonization method depth","why":"Trade-off between time and Validity score.","options":["Per-month ratio (prototype)","Per-month x land cover ratio","Detection-efficiency model (latent fire field)"],"kind":"single","status":"open","choice":null,"notes":""},
+    {"id":"scope","title":"Geographic scope","why":"Data volume and story.","options":["Romania only","Romania + 1 neighbour","Any FIRMS country (pipeline on demand)"],"kind":"single","status":"open","choice":null,"notes":""},
+    {"id":"differentiator","title":"One big differentiator","why":"Only time for one large insight feature.","options":["13. Fire events ranked","16. Weather or us?","14. Fire season clock","25. Story mode"],"kind":"single","status":"open","choice":null,"notes":""},
+    {"id":"demo","title":"Demo format","why":"Video (30 s) or slides (max 7).","options":["30-second video","7-slide deck"],"kind":"single","status":"open","choice":null,"notes":""},
+    {"id":"name","title":"Project name","why":"Needed for the submission form and demo.","options":["Ember Ledger","Firecal","Hotspot Almanac"],"kind":"single","status":"open","choice":null,"notes":""},
+    {"id":"hosting","title":"Where the app lives","why":"Judges need a public link with no login.","options":["GitHub Pages (static)","Vercel / Netlify","Cloudflare Pages"],"kind":"single","status":"open","choice":null,"notes":""}
+  ],
+  "features": {}
+}

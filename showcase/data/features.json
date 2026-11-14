@@ -1,0 +1,580 @@
+[
+ {
+  "id": 1,
+  "name": "Harmonized fire record",
+  "tier": "1",
+  "what": "one daily series per area in VIIRS-equivalent \"fire cell-days\", 2000 to today. Years from the MODIS era are marked \"modelled\", years from the VIIRS era \"observed\".",
+  "data": "FIRMS MODIS and VIIRS; static-source mask; land cover strata.",
+  "effort": "L (the scientific core).",
+  "scores_on": "Validity, Relevance. Award: Best Use of Science.",
+  "promote": "\"Satellites changed in 2012 and Romania's fire count quadrupled overnight. We fixed the record.\"",
+  "effort_code": "L",
+  "criteria": [
+   "Validity",
+   "Relevance"
+  ],
+  "award": [
+   "Best Use of Science"
+  ]
+ },
+ {
+  "id": 2,
+  "name": "Area selection four ways",
+  "tier": "1",
+  "what": "draw a polygon or box; type lat/lon plus a radius; pick a Romanian county; pick a protected area such as the Danube Delta.",
+  "data": "county boundaries, Natura 2000.",
+  "effort": "M.",
+  "scores_on": "Validity (usability). Award: Local Impact.",
+  "promote": "\"Any shape, any place: your county, your forest, your farm.\"",
+  "effort_code": "M",
+  "criteria": [
+   "Impact",
+   "Validity"
+  ],
+  "award": [
+   "Local Impact"
+  ]
+ },
+ {
+  "id": 3,
+  "name": "Burning calendar",
+  "tier": "1",
+  "what": "heatmap with years as rows and months as columns, 2000 to now, on an accessible sequential ramp; modelled cells hatched. Click a cell for the daily view.",
+  "data": "output of feature 1.",
+  "effort": "M.",
+  "scores_on": "Relevance, Presentation. Award: Best Use of Data.",
+  "promote": "the hero image of the project page and the first frame of the video. \"Twenty-five years of fire on one screen.\"",
+  "effort_code": "M",
+  "criteria": [
+   "Relevance",
+   "Presentation"
+  ],
+  "award": [
+   "Best Use of Data"
+  ]
+ },
+ {
+  "id": 4,
+  "name": "\"Is now normal?\" card",
+  "tier": "1",
+  "what": "one sentence plus a gauge, e.g. \"October 2026: 3rd most active October since 2001, 2.4x the median.\"",
+  "data": "feature 1 plus current-month data from the FIRMS API (needs a MAP_KEY; 2026 is not in the country files).",
+  "effort": "S.",
+  "scores_on": "Impact, Relevance.",
+  "promote": "\"The question every fire manager asks, answered in one sentence.\"",
+  "effort_code": "S",
+  "criteria": [
+   "Impact",
+   "Relevance"
+  ],
+  "award": []
+ },
+ {
+  "id": 5,
+  "name": "Exports",
+  "tier": "1",
+  "what": "CSV of the hotspots in the search (with sensor and harmonized fields); CSV of the monthly harmonized table; PNG of the calendar; shareable link that reopens the exact view.",
+  "data": "none extra.",
+  "effort": "S.",
+  "scores_on": "Validity, Relevance (explicitly requested).",
+  "promote": "\"Take it with you: data for analysts, pictures for reports, a link for the group chat.\"",
+  "effort_code": "S",
+  "criteria": [
+   "Validity",
+   "Relevance"
+  ],
+  "award": []
+ },
+ {
+  "id": 6,
+  "name": "Accessibility built in",
+  "tier": "1",
+  "what": "colour-blind-safe ramps (viridis-style) with a high-contrast option; every chart has a data-table fallback for screen readers; keyboard navigation; readable on a phone.",
+  "data": "none.",
+  "effort": "S.",
+  "scores_on": "Validity (user-friendly). The challenge asks for accessible ramps explicitly.",
+  "promote": "one slide line: \"Readable by everyone, including the 1 in 12 men with colour blindness.\" Check the statistic before using it.",
+  "effort_code": "S",
+  "criteria": [
+   "Validity"
+  ],
+  "award": []
+ },
+ {
+  "id": 7,
+  "name": "\"The 2012 cliff\" toggle",
+  "tier": "2",
+  "what": "the same chart with raw stitched counts and with harmonized counts; the jump in 2012 appears and disappears.",
+  "data": "feature 1.",
+  "effort": "S.",
+  "scores_on": "Validity, Presentation. Award: Best Use of Science.",
+  "promote": "the strongest 5 seconds of the video. Nobody else will show the problem this clearly.",
+  "effort_code": "S",
+  "criteria": [
+   "Validity",
+   "Presentation"
+  ],
+  "award": [
+   "Best Use of Science"
+  ]
+ },
+ {
+  "id": 8,
+  "name": "Trust meter and uncertainty band",
+  "tier": "2",
+  "what": "a shaded band showing the cross-validated error on every chart, plus a per-area badge (\"high trust: 2,400 overlapping detections\" / \"low trust: too few fires to calibrate\").",
+  "data": "leave-one-year-out cross-validation results.",
+  "effort": "M.",
+  "scores_on": "Validity. Award: Best Use of Science.",
+  "promote": "\"We tell you how sure we are.\" Rare at hackathons and respected by scientific judges.",
+  "effort_code": "M",
+  "criteria": [
+   "Validity"
+  ],
+  "award": [
+   "Best Use of Science"
+  ]
+ },
+ {
+  "id": 9,
+  "name": "\"Not a fire\" filter",
+  "tier": "2",
+  "what": "toggle that shows what we removed: industrial heat sources, flares, offshore. Early MODIS has no such flags, so we built our own mask from VIIRS.",
+  "data": "VIIRS `type` 2/3 locations, buffered.",
+  "effort": "S.",
+  "scores_on": "Validity, Creativity.",
+  "promote": "\"About 8% of what satellites call fire in Romania is a factory chimney. We take it out, even for 2003.\" (8% is the VIIRS 2015 share; recompute before quoting.)",
+  "effort_code": "S",
+  "criteria": [
+   "Creativity",
+   "Validity"
+  ],
+  "award": []
+ },
+ {
+  "id": 10,
+  "name": "Independent validation view",
+  "tier": "2",
+  "what": "our harmonized yearly totals next to NASA burned area (MCD64A1 / VNP64A1) and EFFIS statistics, with the correlation.",
+  "data": "burned area products, EFFIS yearly xls.",
+  "effort": "M.",
+  "scores_on": "Validity.",
+  "promote": "methods slide: \"Checked against two independent records.\"",
+  "effort_code": "M",
+  "criteria": [
+   "Validity"
+  ],
+  "award": []
+ },
+ {
+  "id": 11,
+  "name": "Satellite timeline strip",
+  "tier": "2",
+  "what": "a thin bar under the calendar showing which satellites were flying each year: Terra only (2000-2002), Terra+Aqua, plus S-NPP (2012), NOAA-20, NOAA-21, and MODIS ending in 2027.",
+  "data": "launch and end dates.",
+  "effort": "S.",
+  "scores_on": "Presentation, Relevance.",
+  "promote": "turns a technical problem into a picture anyone understands. Good for the second slide.",
+  "effort_code": "S",
+  "criteria": [
+   "Relevance",
+   "Presentation"
+  ],
+  "award": []
+ },
+ {
+  "id": 12,
+  "name": "Open method and open dataset",
+  "tier": "2",
+  "what": "a methods page, a reproducible notebook, and the harmonized Parquet files published for anyone to download.",
+  "data": "pipeline outputs.",
+  "effort": "S (if the pipeline is clean).",
+  "scores_on": "Validity, Impact. Award: Best Use of Data.",
+  "promote": "\"We didn't just build an app, we released the harmonized record.\"",
+  "effort_code": "S",
+  "criteria": [
+   "Impact",
+   "Validity"
+  ],
+  "award": [
+   "Best Use of Data"
+  ]
+ },
+ {
+  "id": 13,
+  "name": "Fire events, not just dots",
+  "tier": "3",
+  "what": "cluster hotspots into events (start, end, duration, footprint) and answer the challenge's own question: \"how does a current fire compare with previous ones?\" Example: \"This fire is the 4th largest in this county since 2000.\"",
+  "data": "feature 1 plus space-time clustering.",
+  "effort": "M-L.",
+  "scores_on": "Relevance, Impact, Creativity.",
+  "promote": "\"Not 300 dots: one fire, ranked against every fire before it.\"",
+  "effort_code": "M-L",
+  "criteria": [
+   "Impact",
+   "Creativity",
+   "Relevance"
+  ],
+  "award": []
+ },
+ {
+  "id": 14,
+  "name": "Fire season clock",
+  "tier": "3",
+  "what": "radial day-of-year chart; per year, season start, peak and length; shows whether the season is shifting earlier or growing longer.",
+  "data": "feature 1.",
+  "effort": "M.",
+  "scores_on": "Creativity, Presentation. Awards: Art & Technology, Best Storytelling.",
+  "promote": "the most beautiful visual in the deck. \"Romania's fire year used to peak in August. Now it peaks twice, in March and October.\" (Only if the harmonized data confirms it.)",
+  "effort_code": "M",
+  "criteria": [
+   "Creativity",
+   "Presentation"
+  ],
+  "award": [
+   "Art & Technology, Best Storytelling"
+  ]
+ },
+ {
+  "id": 15,
+  "name": "Trend with significance",
+  "tier": "3",
+  "what": "\"Burning in this area fell 41% since 2005 (statistically significant)\" using a Mann-Kendall test and Sen's slope, with a plain-language explanation.",
+  "data": "feature 1.",
+  "effort": "S.",
+  "scores_on": "Validity, Impact.",
+  "promote": "gives the anomaly card a long-term companion.",
+  "effort_code": "S",
+  "criteria": [
+   "Impact",
+   "Validity"
+  ],
+  "award": []
+ },
+ {
+  "id": 16,
+  "name": "\"Weather or us?\" quadrant",
+  "tier": "3",
+  "what": "for each month, plot the fire weather anomaly (FWI from ERA5) against the burning anomaly. High burning in normal weather points at human behaviour; high burning in extreme weather points at the climate.",
+  "data": "ERA5 fire danger indices or CEMS GEFF.",
+  "effort": "M-L.",
+  "scores_on": "Creativity, Validity. Award: Best Use of Science.",
+  "promote": "\"Was it the weather, or was it us?\" Most creative single idea in this list, and it uses the team's original prediction research.",
+  "effort_code": "M-L",
+  "criteria": [
+   "Creativity",
+   "Validity"
+  ],
+  "award": [
+   "Best Use of Science"
+  ]
+ },
+ {
+  "id": 17,
+  "name": "Human fingerprint",
+  "tier": "3",
+  "what": "weekday and holiday pattern of fires. Natural fires don't know it is Sunday; human burning peaks on weekends and around holidays. Lightning fires are rare in Romania, so this exposes how human the fire regime is.",
+  "data": "FIRMS dates plus the Romanian holiday calendar.",
+  "effort": "S.",
+  "scores_on": "Creativity, Impact.",
+  "promote": "surprising and cheap. \"Fires in Romania take the weekend off... or rather, they start then.\" (Check the direction in the data first.)",
+  "effort_code": "S",
+  "criteria": [
+   "Impact",
+   "Creativity"
+  ],
+  "award": []
+ },
+ {
+  "id": 18,
+  "name": "Policy impact lens",
+  "tier": "3",
+  "what": "policy milestones on the timeline (EU accession 2007, GAEC stubble-burning rules, 2022 fines ordinance) with before/after statistics per area.",
+  "data": "feature 1 plus the policy timeline.",
+  "effort": "S.",
+  "scores_on": "Impact. Award: Local Impact.",
+  "promote": "\"Did the fines work? Now we can measure it.\" Speaks to ministries, APIA and the Environmental Guard. Claims must stay correlational.",
+  "effort_code": "S",
+  "criteria": [
+   "Impact"
+  ],
+  "award": [
+   "Local Impact"
+  ]
+ },
+ {
+  "id": 19,
+  "name": "Chronic burn sites",
+  "tier": "3",
+  "what": "map of grid cells that burn nearly every year, ranked. Targets for prevention, patrols and farmer outreach.",
+  "data": "feature 1.",
+  "effort": "S.",
+  "scores_on": "Impact, Relevance.",
+  "promote": "\"These 50 places burn every single year.\" Concrete and actionable for responders.",
+  "effort_code": "S",
+  "criteria": [
+   "Impact",
+   "Relevance"
+  ],
+  "award": []
+ },
+ {
+  "id": 20,
+  "name": "Land type split",
+  "tier": "3",
+  "what": "calendar split into cropland, forest, grassland and wetland.",
+  "data": "ESA WorldCover; Corine for older years.",
+  "effort": "M.",
+  "scores_on": "Relevance, Validity. Uses ESA (partner) data.",
+  "promote": "\"Stubble, forest or reeds? Three different problems, three different responses.\"",
+  "effort_code": "M",
+  "criteria": [
+   "Validity",
+   "Relevance"
+  ],
+  "award": []
+ },
+ {
+  "id": 21,
+  "name": "Climatological outlook",
+  "tier": "3",
+  "what": "\"Historically, 62% of this area's yearly burning happens in the next 6 weeks\", with median and 90th-percentile expectations, next to EFFIS's 6-day danger forecast.",
+  "data": "feature 1; EFFIS WMS.",
+  "effort": "S-M.",
+  "scores_on": "Impact, Relevance (early warning).",
+  "promote": "\"Plan staff before the season, not during it.\"",
+  "effort_code": "S-M",
+  "criteria": [
+   "Impact",
+   "Relevance"
+  ],
+  "award": []
+ },
+ {
+  "id": 22,
+  "name": "Place memory",
+  "tier": "3",
+  "what": "click any point: \"This spot burned in 2007, 2012 and 2019.\"",
+  "data": "feature 1.",
+  "effort": "S.",
+  "scores_on": "Presentation, Impact.",
+  "promote": "an intimate demo moment, for example clicking a village in the Danube Delta.",
+  "effort_code": "S",
+  "criteria": [
+   "Impact",
+   "Presentation"
+  ],
+  "award": []
+ },
+ {
+  "id": 23,
+  "name": "Smoke impact",
+  "tier": "3",
+  "what": "estimated smoke emissions per month (CAMS GFAS) and, for a big event, the CO plume (Sentinel-5P); optionally nearby PM2.5 stations.",
+  "data": "CAMS GFAS, TROPOMI, EEA stations.",
+  "effort": "L.",
+  "scores_on": "Impact. Award: Global Connection (smoke crosses borders, e.g. Giurgiu to Ruse).",
+  "promote": "\"Fire doesn't stop at the border, and neither does smoke.\"",
+  "effort_code": "L",
+  "criteria": [
+   "Impact"
+  ],
+  "award": [
+   "Global Connection (smoke crosses borders, e"
+  ]
+ },
+ {
+  "id": 24,
+  "name": "Cross-border view",
+  "tier": "3",
+  "what": "same calendar for Moldova, Bulgaria and Ukraine, or for an area spanning a border.",
+  "data": "FIRMS country files for neighbours (verified available).",
+  "effort": "S once the pipeline is country-agnostic.",
+  "scores_on": "Impact. Award: Global Connection.",
+  "promote": "proves the method generalizes. Avoid showing conflict-driven fires in Ukraine.",
+  "effort_code": "S",
+  "criteria": [
+   "Impact"
+  ],
+  "award": [
+   "Global Connection"
+  ]
+ },
+ {
+  "id": 25,
+  "name": "Story mode",
+  "tier": "3",
+  "what": "a guided scroll-through: \"Romania's burning year\", from stubble fires to Delta reed burning to the policy change, with the calendar animating along.",
+  "data": "features 1, 14, 18.",
+  "effort": "M.",
+  "scores_on": "Presentation. Award: Best Storytelling.",
+  "promote": "doubles as the slide deck and the video script.",
+  "effort_code": "M",
+  "criteria": [
+   "Presentation"
+  ],
+  "award": [
+   "Best Storytelling"
+  ]
+ },
+ {
+  "id": 26,
+  "name": "Area briefing",
+  "tier": "3",
+  "what": "one printable page for a selected area: calendar, anomaly, trend, chronic sites, outlook.",
+  "data": "all above.",
+  "effort": "M.",
+  "scores_on": "Impact, Validity (usable by non-experts).",
+  "promote": "\"What a county inspector puts on the wall in March.\"",
+  "effort_code": "M",
+  "criteria": [
+   "Impact",
+   "Validity"
+  ],
+  "award": []
+ },
+ {
+  "id": 27,
+  "name": "Bilingual interface (English and Romanian)",
+  "tier": "3",
+  "what": "language switch. Submission stays in English; Romanian serves the people who would use it.",
+  "effort": "S.",
+  "scores_on": "Impact. Award: Local Impact.",
+  "promote": "\"Built in Bucharest, for the people who fight these fires.\"",
+  "effort_code": "S",
+  "criteria": [
+   "Impact"
+  ],
+  "award": [
+   "Local Impact"
+  ]
+ },
+ {
+  "id": 28,
+  "name": "Sensor-agnostic by design",
+  "tier": "4",
+  "what": "the harmonization is a framework: any new sensor is calibrated against the record during an overlap year. Next candidates: Sentinel-3 SLSTR (ESA), MTG FCI (10-minute geostationary over Europe, 1 km), FireSat (data from Q4 2026).",
+  "promote": "the video's closing line: \"MODIS dies in 2027. Your fire history doesn't have to.\"",
+  "effort_code": "",
+  "criteria": [],
+  "award": []
+ },
+ {
+  "id": 29,
+  "name": "Alerts",
+  "tier": "4",
+  "what": "subscribe to an area; get notified when weekly activity passes the 90th percentile of its own history.",
+  "promote": "early warning that is relative to the place, not a global threshold.",
+  "effort_code": "",
+  "criteria": [],
+  "award": []
+ },
+ {
+  "id": 30,
+  "name": "Embeddable widget and API",
+  "tier": "4",
+  "what": "an iframe calendar that county websites or newsrooms can embed; a JSON endpoint per area.",
+  "promote": "reach beyond our own site.",
+  "effort_code": "",
+  "criteria": [],
+  "award": []
+ },
+ {
+  "id": 31,
+  "name": "Field mode",
+  "tier": "4",
+  "what": "offline-capable, low-bandwidth version for phones in the field.",
+  "promote": "firefighters, not just analysts.",
+  "effort_code": "",
+  "criteria": [],
+  "award": []
+ },
+ {
+  "id": 32,
+  "name": "One season or two?",
+  "tier": "L",
+  "what": "classify each area's year as having one or two burning seasons, and show when that changed. Two seasons per year is a known human fingerprint (Benali et al. 2017).",
+  "data": "feature 1; circular statistics on day of year.",
+  "effort": "S-M.",
+  "scores_on": "Validity, Creativity. Award: Best Use of Science.",
+  "promote": "\"Nature burns once a year. Romania burns twice. Here's why.\" (Only if the data shows it.)",
+  "effort_code": "S-M",
+  "criteria": [
+   "Creativity",
+   "Validity"
+  ],
+  "award": [
+   "Best Use of Science"
+  ]
+ },
+ {
+  "id": 33,
+  "name": "Energy view",
+  "tier": "L",
+  "what": "toggle between counting fires and summing their energy (fire radiative power). Energy agrees better between sensors and separates a big forest fire from many small stubble fires.",
+  "data": "FIRMS `frp` column.",
+  "effort": "S.",
+  "scores_on": "Validity, Creativity.",
+  "promote": "\"Not just how many fires, but how much fire.\"",
+  "effort_code": "S",
+  "criteria": [
+   "Creativity",
+   "Validity"
+  ],
+  "award": []
+ },
+ {
+  "id": 34,
+  "name": "Return periods",
+  "tier": "L",
+  "what": "\"A month this active happens once every 12 years here.\"",
+  "data": "feature 1.",
+  "effort": "S.",
+  "scores_on": "Impact (language that emergency managers already use for floods).",
+  "promote": "borrows a concept managers trust from flood planning.",
+  "effort_code": "S",
+  "criteria": [
+   "Impact"
+  ],
+  "award": []
+ },
+ {
+  "id": 35,
+  "name": "Analog years",
+  "tier": "L",
+  "what": "the past years whose calendar so far looks most like this year's, and what happened next in them.",
+  "data": "feature 1.",
+  "effort": "M.",
+  "scores_on": "Creativity, Impact (early warning without a trained model).",
+  "promote": "\"This year looks like 2012. In 2012, October was the worst month.\"",
+  "effort_code": "M",
+  "criteria": [
+   "Impact",
+   "Creativity"
+  ],
+  "award": []
+ },
+ {
+  "id": 36,
+  "name": "Fire regime context",
+  "tier": "L",
+  "what": "which global fire regime (\"pyrome\") the area belongs to, and similar places elsewhere.",
+  "data": "Pais et al. 2023 classification, if downloadable.",
+  "effort": "M.",
+  "scores_on": "Global Connection award.",
+  "promote": "\"Your county burns like [region]; here is what they learned.\"",
+  "effort_code": "M",
+  "criteria": [],
+  "award": []
+ },
+ {
+  "id": 37,
+  "name": "Seasonal forecast (vision)",
+  "tier": "L",
+  "what": "forecast the coming season's burning from drought indices (as in Turco et al. 2018), shown on the calendar as next year's expected row.",
+  "promote": "tier 4 pitch: from history to foresight. sites), 17 (human fingerprint), 33 (energy view), 34 (return periods). partners).",
+  "effort_code": "",
+  "criteria": [],
+  "award": []
+ }
+]

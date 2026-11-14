@@ -40,3 +40,17 @@ Sampled 2026-11-14 from the FIRMS per-country yearly CSVs (standard processing).
    shows it, it is a strong demo narrative; if not, we drop it.
 
 Sample files can be re-downloaded with the URL pattern in `docs/hackathon-brief.md`.
+
+## Prototype harmonization results (2026-11-14)
+
+Full 2000-2025 record built by `showcase/scripts/build_data.py`; numbers are visible in the showcase.
+
+- **Fire cell-days** (0.02 deg grid, one count per cell per day), vegetation only, MODIS confidence >= 30,
+  VIIRS confidence not `l`, static-source mask from VIIRS type 2/3 locations.
+- **Per-month VIIRS/MODIS cell-day ratio** fitted on 2013-2022 ranges from about 2.4 (Sep-Oct) to 6.5 (May).
+- **Mixing VIIRS satellites breaks the record.** Using S-NPP + NOAA-20 together as the reference made the
+  leave-one-year-out error about 28% with a clear jump at 2018. Using **S-NPP only** brought the error on
+  yearly totals down to **3.5%** (worst year 2020, +11%).
+- **MODIS product versions are mixed** in the country files (6.2, 6.03, 61.03); check whether this matters.
+- The static-source mask removed 852 MODIS "vegetation" detections over 2000-2025.
+- Terra-only months (before July 2002) are scaled by a per-month (Terra+Aqua)/Terra factor fitted on 2003-2011.
