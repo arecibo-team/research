@@ -76,7 +76,7 @@ function setAoi(spec, write = true) {
   S.rendered = {};
   $("#aoi-name").textContent = S.aoi.name;
   const total = d3.sum(S.rows, (r) => r.harm);
-  $("#aoi-stats").textContent = `${fmt(S.aoi.cells.size)} grid cells with fire history · ${fmt(Math.round(total))} harmonized fire cell-days since 2000`;
+  $("#aoi-stats").textContent = `${fmt(S.aoi.cells.size)} cells with fire history · ${fmt(Math.round(total))} fire cell-days since 2000`;
   $("#sel-county").value = spec.type === "county" ? String(spec.id) : spec.type === "ro" ? "ro" : "";
   drawAoiOutline();
   if (write) writeHash();
@@ -162,12 +162,12 @@ function initControls() {
     setAoi({ type: "circle", lat, lon, r });
   };
   const presets = [
-    ["Danube Delta (Tulcea)", { type: "county", id: idOf("Tulcea") }],
+    ["Danube Delta, Tulcea", { type: "county", id: idOf("Tulcea") }],
     ["Dolj stubble belt", { type: "circle", lat: 44.18, lon: 23.15, r: 25, name: "Dolj stubble belt (25 km)" }],
     ["Bucharest + Ilfov", { type: "circle", lat: 44.43, lon: 26.1, r: 35, name: "Bucharest area (35 km)" }],
     ["Romania", { type: "ro" }],
   ];
-  $("#presets").innerHTML = presets.map(([n], i) => `<button class="ghost" data-i="${i}">${esc(n)}</button>`).join("");
+  $("#presets").innerHTML = presets.map(([n], i) => `<button data-i="${i}">${esc(n)}</button>`).join("");
   $$("#presets button").forEach((b) => (b.onclick = () => setAoi(presets[+b.dataset.i][1])));
   $("#btn-share").onclick = async () => {
     writeHash();
@@ -224,7 +224,7 @@ function renderExploreMap() {
   const max = d3.quantile([...tot.values()].sort(d3.ascending), 0.99);
   const interp = d3["interpolate" + S.scheme];
   const col = (v) => interp(0.15 + 0.85 * Math.min(1, Math.sqrt(v / max)));
-  const legend = `<span>Harmonized fire cell-days per 2 km cell, 2000–2025</span><span class="ramp" style="background:${rampCss((t) => interp(0.15 + 0.85 * t))}"></span><span>low → high</span>`;
+  const legend = `<span>Fire cell-days per 2 km cell, 2000–2025</span><span class="ramp" style="background:${rampCss((t) => interp(0.15 + 0.85 * t))}"></span><span>low → high</span>`;
   S.exploreLayer = { layer: gridOverlay(tot, col), legend }; S.exploreScheme = S.scheme;
   setDataLayer(S.exploreLayer.layer, legend);
 }
@@ -234,7 +234,7 @@ function renderNow() {
   const mName = MONTHS_LONG[month];
   let where = "within the usual range";
   if (ctx.value > ctx.p90) where = "above the usual range"; else if (ctx.value < ctx.p10) where = "below the usual range";
-  const ratioTxt = ctx.ratio == null ? "" : ctx.ratio >= 1 ? ` · ${ctx.ratio.toFixed(1)}× the median ${mName}` : ` · ${Math.round(ctx.ratio * 100)}% of the median ${mName}`;
+  const ratioTxt = ctx.ratio == null ? "" : ctx.ratio >= 1 ? `, ${ctx.ratio.toFixed(1)}× the median ${mName}` : `, ${Math.round(ctx.ratio * 100)}% of the median ${mName}`;
   const max = Math.max(ctx.value, ctx.p90, 1) * 1.1, pos = (v) => `${Math.min(100, (100 * v) / max)}%`;
   const yOpts = d3.range(DATA.meta.years[1], DATA.meta.years[0] - 1, -1).map((y) => `<option ${y === year ? "selected" : ""}>${y}</option>`).join("");
   const mOpts = MONTHS_LONG.map((m, i) => `<option value="${i}" ${i === month ? "selected" : ""}>${m}</option>`).join("");
@@ -242,16 +242,17 @@ function renderNow() {
     <div>
       <div class="pick"><span class="kicker">Is this normal?</span>
         <select id="ref-m" aria-label="Month">${mOpts}</select><select id="ref-y" aria-label="Year">${yOpts}</select></div>
-      <p class="sentence"><b>${mName} ${year}${ctx.inProgress ? ` (1–${ctx.cut})` : ""}</b> ${ctx.inProgress ? "is" : "was"} the <b>${ord(ctx.rank)} most active ${mName}${ctx.inProgress ? ` start` : ""}</b> of ${ctx.n} years in ${esc(S.aoi.name)}${ratioTxt}: <b>${where}</b>.</p>
-      <span class="badge ${t.level}" title="Harmonization checked against VIIRS on 2013–2022 in this area">${t.level} trust · ±${t.err == null ? "–" : t.err.toFixed(0)}% locally</span>
-      <span class="hint"> ${year < 2012 ? "Modelled from MODIS." : "Observed by VIIRS."} Latest data: ${isoOf(DATA.nDays - 1)}.</span>
+      <p class="sentence"><b>${mName} ${year}${ctx.inProgress ? ` (1–${ctx.cut})` : ""}</b> ${ctx.inProgress ? "is" : "was"} the ${ord(ctx.rank)} most active ${mName}${ctx.inProgress ? ` start` : ""} of ${ctx.n} years in ${esc(S.aoi.name)}${ratioTxt}, <span class="${where.startsWith("within") ? "" : "verdict"}">${where}</span></p>
+      <div class="meta"><span>${year < 2012 ? '<span class="src"></span>Modelled from MODIS' : '<span class="src obs"></span>Observed by VIIRS'}</span>
+        <span class="trust ${t.level}" title="Harmonization checked against VIIRS on 2013–2022 in this area">${t.level[0].toUpperCase() + t.level.slice(1)} trust, ±${t.err == null ? "–" : t.err.toFixed(0)}% here</span>
+        <span>Data to ${isoOf(DATA.nDays - 1)}</span></div>
     </div>
     <div>
       <div class="gauge" aria-hidden="true"><div class="track"></div>
         <div class="band" style="left:${pos(ctx.p10)};width:calc(${pos(ctx.p90)} - ${pos(ctx.p10)})"></div>
         <div class="med" style="left:${pos(ctx.median)}"></div><div class="cur" style="left:${pos(ctx.value)}"></div></div>
       <div class="gauge-labels"><span>0</span><span>usual range ${fmt(Math.round(ctx.p10))}–${fmt(Math.round(ctx.p90))}</span><span>${fmt(Math.round(max))}</span></div>
-      <p class="hint">${fmt(Math.round(ctx.value))} fire cell-days vs median ${fmt(Math.round(ctx.median))} (other years). Click any calendar cell to compare another month.</p>
+      <p class="gauge-note">${fmt(Math.round(ctx.value))} fire cell-days vs a median of ${fmt(Math.round(ctx.median))} in other years. Select a calendar cell to compare another month.</p>
     </div>`;
   const upd = () => { S.ref = { year: +$("#ref-y").value, month: +$("#ref-m").value }; writeHash(); renderNow(); renderCalendar(); renderSpaghetti(); };
   $("#ref-y").onchange = upd; $("#ref-m").onchange = upd;
@@ -270,16 +271,16 @@ function calendarData() {
 function renderCalendar() {
   const data = calendarData(), anom = S.calMode === "anom";
   $("#cal-hint").textContent = {
-    harm: "Harmonized fire cell-days (VIIRS-equivalent). Faded cells are modelled from MODIS (before 2012), solid cells are observed by VIIRS.",
-    raw: "Raw fire cell-days: MODIS until Jan 2012, VIIRS after. Note the jump: this is the problem harmonization fixes.",
-    anom: "Each month against the median of the same month across all years (log2: +1 = twice the median, −1 = half).",
+    harm: "Harmonized fire cell-days in VIIRS terms. □ years are modelled from MODIS and drawn lighter, ■ years are observed by VIIRS.",
+    raw: "Raw fire cell-days, MODIS until January 2012 and VIIRS after. The jump in 2012 is the problem harmonization fixes.",
+    anom: "Each month against the median of the same month in all years, on a log2 scale: +1 is twice the median, −1 is half.",
   }[S.calMode];
   const ref = data.find((d) => d.year === S.ref.year && d.month === S.ref.month);
   const plot = Plot.plot({
-    width: 760, height: 24 * 26 + 50, marginLeft: 44, marginTop: 40, padding: 0.06,
-    x: { domain: MONTHS, label: null, axis: "top" }, y: { domain: d3.range(2000, DATA.meta.years[1] + 1).map(String), label: null },
-    color: anom ? { type: "diverging", scheme: "RdBu", reverse: true, domain: [-3, 3], legend: true, label: "vs median (log2)" }
-                : { type: "sqrt", scheme: S.scheme, legend: true, label: S.calMode === "harm" ? "harmonized fire cell-days" : "raw fire cell-days" },
+    width: 760, height: 24 * 27 + 50, marginLeft: 56, marginTop: 40, padding: 0.06,
+    x: { domain: MONTHS, label: null, axis: "top", tickSize: 0 }, y: { domain: d3.range(2000, DATA.meta.years[1] + 1).map(String), label: null, tickSize: 0, tickFormat: (y) => `${y} ${+y < 2012 ? "□" : "■"}` },
+    color: anom ? { type: "diverging", scheme: "RdBu", reverse: true, domain: [-3, 3], legend: true, label: "Against the median, log2" }
+                : { type: "sqrt", scheme: S.scheme, legend: true, tickFormat: "~s", label: S.calMode === "harm" ? "Harmonized fire cell-days" : "Raw fire cell-days" },
     marks: [
       Plot.cell(data, { x: "label", y: "y", fill: "v", fillOpacity: (d) => (S.calMode !== "raw" && d.modelled ? 0.72 : 1), inset: 0.5 }),
       Plot.cell(ref ? [ref] : [], { x: "label", y: "y", stroke: css("--ink"), strokeWidth: 2.5, fill: "none" }),
@@ -303,24 +304,26 @@ function renderYearly() {
   const raw = ys.map((r) => ({ year: r.year, v: r.year < 2012 ? r.modis : r.viirs }));
   const band = ys.filter((r) => r.year < 2012).map((r) => ({ year: r.year, lo: r.harm * (1 - err), hi: r.harm * (1 + err) }));
   $("#yearly").replaceChildren(Plot.plot({
-    height: 260, marginLeft: 52, x: { label: null, tickFormat: "d" }, y: { grid: true, label: "fire cell-days / year" },
+    height: 280, marginLeft: 52, x: { label: null, tickFormat: "d" }, y: { grid: true, label: "fire cell-days per year" },
     marks: [
-      Plot.areaY(band, { x: "year", y1: "lo", y2: "hi", fill: css("--modis"), fillOpacity: 0.18 }),
-      Plot.ruleX([2012], { stroke: css("--line"), strokeDasharray: "3 3" }),
-      Plot.lineY(raw, { x: "year", y: "v", stroke: css("--muted"), strokeDasharray: "5 4", strokeWidth: 1.5 }),
-      Plot.lineY(ys, { x: "year", y: "harm", stroke: css("--accent"), strokeWidth: 2.5, marker: "dot" }),
+      Plot.areaY(band, { x: "year", y1: "lo", y2: "hi", fill: css("--c-soft"), fillOpacity: 0.7 }),
+      Plot.ruleX([2012], { stroke: css("--c-mid"), strokeDasharray: "2 3" }),
+      Plot.lineY(raw, { x: "year", y: "v", stroke: css("--c-mid"), strokeDasharray: "4 4", strokeWidth: 1.5 }),
+      Plot.lineY(ys, { x: "year", y: "harm", stroke: css("--c-strong"), strokeWidth: 2, curve: "monotone-x" }),
+      Plot.dot(ys, { x: "year", y: "harm", r: 3.5, stroke: css("--c-strong"), strokeWidth: 1.5, fill: (d) => (d.year < 2012 ? css("--surface") : css("--c-strong")), symbol: "square" }),
+      Plot.dot(ys.filter((d) => d.year === S.ref.year), { x: "year", y: "harm", r: 5, fill: css("--accent"), symbol: "square" }),
       Plot.tip(ys, Plot.pointerX({ x: "year", y: "harm", title: (d) => `${d.year}\nharmonized ${fmt(Math.round(d.harm))}\nraw MODIS ${fmt(d.modis)} · VIIRS ${fmt(d.viirs)}` })),
     ],
   }));
   const D = (s) => new Date(s), today = D("2026-11-14");
   const sats = [
-    { s: "Terra MODIS", a: D("2000-11-01"), b: D("2027-02-01"), c: css("--modis") }, { s: "Aqua MODIS", a: D("2002-07-04"), b: D("2027-09-01"), c: css("--modis") },
-    { s: "S-NPP VIIRS", a: D("2012-01-20"), b: today, c: css("--viirs") }, { s: "NOAA-20 VIIRS", a: D("2018-01-01"), b: today, c: css("--viirs") },
+    { s: "Terra MODIS", a: D("2000-11-01"), b: D("2027-02-01"), m: true }, { s: "Aqua MODIS", a: D("2002-07-04"), b: D("2027-09-01"), m: true },
+    { s: "S-NPP VIIRS", a: D("2012-01-20"), b: today }, { s: "NOAA-20 VIIRS", a: D("2018-01-01"), b: today },
   ];
   $("#sats").replaceChildren(Plot.plot({
-    height: 110, marginLeft: 100, x: { type: "time", label: null, domain: [D("2000-01-01"), D("2028-01-01")] }, y: { label: null },
-    marks: [Plot.barX(sats, { y: "s", x1: "a", x2: (d) => (d.b > today ? today : d.b), fill: "c", inset: 3 }),
-      Plot.ruleY(sats.filter((d) => d.b > today), { y: "s", x1: () => today, x2: "b", stroke: "c", strokeDasharray: "2 2", strokeWidth: 2 })],
+    height: 112, marginLeft: 104, x: { type: "time", label: null, domain: [D("2000-01-01"), D("2028-01-01")] }, y: { label: null, tickSize: 0 },
+    marks: [Plot.barX(sats, { y: "s", x1: "a", x2: (d) => (d.b > today ? today : d.b), fill: (d) => (d.m ? "none" : css("--c-strong")), stroke: css("--c-strong"), strokeWidth: 1.5, insetTop: 4, insetBottom: 4 }),
+      Plot.ruleY(sats.filter((d) => d.b > today), { y: "s", x1: () => today, x2: "b", stroke: css("--c-mid"), strokeDasharray: "2 2", strokeWidth: 1.5 })],
   }));
   const full = ys.filter((r) => r.year >= 2001 && r.year <= DATA.lastFull), tr = trend(full.map((r) => r.harm));
   const mean = d3.mean(full, (r) => r.harm), rel = mean ? (tr.slope / mean) * 100 : 0;
@@ -341,11 +344,11 @@ function renderSpaghetti() {
     height: 300, marginLeft: 52, x: { label: "day of year", ticks: [0, 59, 120, 181, 243, 304, 364], tickFormat: (d) => doyLabel(d) },
     y: { grid: true, label: "cumulative fire cell-days" },
     marks: [
-      Plot.areaY(band, { x: "doy", y1: "lo", y2: "hi", fill: css("--muted"), fillOpacity: 0.15 }),
-      Plot.lineY(lines.filter((d) => d.year !== refY), { x: "doy", y: "c", z: "year", stroke: css("--muted"), strokeOpacity: 0.25, strokeWidth: 1 }),
-      Plot.lineY(band, { x: "doy", y: "med", stroke: css("--ink"), strokeDasharray: "4 3" }),
-      Plot.lineY(lines.filter((d) => d.year === refY), { x: "doy", y: "c", stroke: css("--accent"), strokeWidth: 3 }),
-      Plot.text(lines.filter((d) => d.year === refY).slice(-1), { x: "doy", y: "c", text: () => String(refY), dx: -4, dy: -8, textAnchor: "end", fill: css("--accent"), fontWeight: 700 }),
+      Plot.areaY(band, { x: "doy", y1: "lo", y2: "hi", fill: css("--c-soft"), fillOpacity: 0.6 }),
+      Plot.lineY(lines.filter((d) => d.year !== refY), { x: "doy", y: "c", z: "year", stroke: css("--c-mid"), strokeOpacity: 0.35, strokeWidth: 1 }),
+      Plot.lineY(band, { x: "doy", y: "med", stroke: css("--c-strong"), strokeDasharray: "4 4" }),
+      Plot.lineY(lines.filter((d) => d.year === refY), { x: "doy", y: "c", stroke: css("--accent"), strokeWidth: 2.5 }),
+      Plot.text(lines.filter((d) => d.year === refY).slice(-1), { x: "doy", y: "c", text: () => String(refY), dx: -4, dy: -8, textAnchor: "end", fill: css("--accent-ink"), fontWeight: 500 }),
       Plot.tip(lines, Plot.pointer({ x: "doy", y: "c", title: (d) => `${d.year}, by ${doyLabel(d.doy)}: ${fmt(Math.round(d.c))}` })),
     ],
   }));
@@ -354,10 +357,10 @@ function renderSpaghetti() {
 function renderSeason() {
   const s = seasons(S.series).filter((d) => d.total >= 10);
   $("#season").replaceChildren(Plot.plot({
-    height: Math.max(220, s.length * 14 + 50), marginLeft: 44, x: { domain: [0, 365], label: null, ticks: [0, 59, 120, 181, 243, 304], tickFormat: (d) => doyLabel(d) },
-    y: { label: null, domain: s.map((d) => String(d.year)) },
-    marks: [Plot.ruleY(s, { y: (d) => String(d.year), x1: "start", x2: "end", stroke: (d) => (d.year < 2012 ? css("--modis") : css("--viirs")), strokeWidth: 6, strokeOpacity: 0.55 }),
-      Plot.dot(s, { y: (d) => String(d.year), x: "mid", fill: css("--ink"), r: 3, tip: true, title: (d) => `${d.year}: ${doyLabel(d.start)} – ${doyLabel(d.end)}, half done by ${doyLabel(d.mid)}` })],
+    height: Math.max(220, s.length * 16 + 48), marginLeft: 56, x: { domain: [0, 365], label: null, ticks: [0, 59, 120, 181, 243, 304], tickFormat: (d) => doyLabel(d) },
+    y: { label: null, domain: s.map((d) => String(d.year)), tickSize: 0, tickFormat: (y) => `${y} ${+y < 2012 ? "□" : "■"}` },
+    marks: [Plot.barX(s, { y: (d) => String(d.year), x1: "start", x2: "end", fill: (d) => (d.year < 2012 ? "none" : css("--c-soft")), stroke: css("--c-mid"), strokeWidth: 1, insetTop: 3, insetBottom: 3 }),
+      Plot.dot(s, { y: (d) => String(d.year), x: "mid", fill: css("--c-strong"), r: 3, tip: true, title: (d) => `${d.year}: ${doyLabel(d.start)} – ${doyLabel(d.end)}, half done by ${doyLabel(d.mid)}` })],
   }));
   const early = s.filter((d) => d.year <= 2010), late = s.filter((d) => d.year >= 2016);
   if (early.length >= 4 && late.length >= 4) {
@@ -380,25 +383,24 @@ function renderPrevent() {
   const hist = d3.range(1, of + 1).map((k) => ({ k, n: sites.filter((s) => s.nYears === k).length }));
   $("#recur-chart").replaceChildren(Plot.plot({
     height: 200, marginLeft: 52, x: { label: "number of years with fire (of 14)" }, y: { grid: true, label: "cells", type: "sqrt" },
-    color: { type: "sequential", scheme: "YlOrRd", domain: [1, of] },
-    marks: [Plot.barY(hist, { x: "k", y: "n", fill: "k", tip: true }), Plot.ruleY([0])],
+    marks: [Plot.barY(hist, { x: "k", y: "n", fill: (d) => (d.k >= of / 2 ? css("--accent") : css("--c-soft")), tip: true }), Plot.ruleY([0], { stroke: css("--c-mid") })],
   }));
   const top = sites.slice(0, 60);
   $("#recur-table").innerHTML = `<table><thead><tr><th>Place (2 km cell)</th><th>County</th><th>Years</th><th>Fire days</th><th>Peak months</th><th>Usual window</th></tr></thead><tbody>${top.map((s, i) => `
-    <tr class="click" data-i="${i}"><td>${s.lat.toFixed(3)}, ${s.lon.toFixed(3)}</td><td>${esc(DATA.meta.counties.find((c) => c.id === s.county)?.name || "–")}</td>
-    <td><span class="bar-cell" style="width:${(40 * s.nYears) / of}px"></span> ${s.nYears}/${of}</td><td>${s.days}</td>
+    <tr class="click" data-i="${i}"><td>${s.lat.toFixed(3)}, ${s.lon.toFixed(3)}</td><td class="name">${esc(DATA.meta.counties.find((c) => c.id === s.county)?.name || "–")}</td>
+    <td><span class="bar-cell${s.nYears >= of / 2 ? " hot" : ""}" style="width:${Math.round((40 * s.nYears) / of)}px"></span>${s.nYears}/${of}</td><td>${s.days}</td>
     <td>${s.topMonths.map((m) => MONTHS[m]).join(", ")}</td><td>${doyLabel(Math.round(s.winStart))} – ${doyLabel(Math.round(s.winEnd))}</td></tr>`).join("")}</tbody></table>`;
   $$("#recur-table tr.click").forEach((tr) => (tr.onclick = () => { const s = top[+tr.dataset.i]; S.map.setView([s.lat, s.lon], 12); }));
   renderBacktest();
   const w = weekdayProfile(S.series), mean = d3.mean(w), days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   $("#weekday").replaceChildren(Plot.plot({
     height: 190, marginLeft: 48, x: { domain: days, label: null }, y: { grid: true, label: "vs weekly mean", tickFormat: "+.0%" },
-    marks: [Plot.barY(w.map((v, i) => ({ d: days[i], v: mean ? v / mean - 1 : 0 })), { x: "d", y: "v", fill: (d) => (d.v > 0 ? css("--accent") : css("--muted")), tip: true }), Plot.ruleY([0])],
+    marks: [Plot.barY(w.map((v, i) => ({ d: days[i], v: mean ? v / mean - 1 : 0 })), { x: "d", y: "v", fill: (d) => (d.v > 0 ? css("--c-strong") : css("--c-soft")), tip: true }), Plot.ruleY([0], { stroke: css("--c-mid") })],
   }));
   // map layer: years burned
   const vals = new Map(sites.map((s) => [s.key, s.nYears]));
   const col = (v) => d3.interpolateYlOrRd(0.15 + (0.85 * (v - 1)) / (of - 1));
-  setDataLayer(gridOverlay(vals, col), `<span>Years with fire, 2012–2025</span><span class="ramp" style="background:${rampCss((t) => d3.interpolateYlOrRd(0.15 + 0.85 * t))}"></span><span>1 → 14</span>`);
+  setDataLayer(gridOverlay(vals, col), `<span>Years with fire, 2012–2025</span><span class="mono">1</span><span class="ramp" style="background:${rampCss((t) => d3.interpolateYlOrRd(0.15 + 0.85 * t))}"></span><span class="mono">14</span>`);
 }
 
 function renderBacktest() {
@@ -426,14 +428,14 @@ function renderPlan() {
     height: 260, marginLeft: 52, x: { label: "week of year", domain: d3.range(52), tickFormat: (d) => (d % 4 === 0 ? doyLabel(d * 7) : ""), tickRotate: 0 },
     y: { grid: true, label: "fire cell-days per week" },
     marks: [
-      Plot.barY(clim, { x: "week", y: "median", fill: (d) => (inWin(d.week) ? css("--accent") : css("--muted")), fillOpacity: (d) => (inWin(d.week) ? 0.95 : 0.45) }),
-      Plot.tickY(clim, { x: "week", y: "p90", stroke: css("--ink"), strokeWidth: 1.5 }),
+      Plot.barY(clim, { x: "week", y: "median", fill: (d) => (inWin(d.week) ? css("--accent") : css("--c-soft")) }),
+      Plot.tickY(clim, { x: "week", y: "p90", stroke: css("--c-strong"), strokeWidth: 1.5 }),
       Plot.tip(clim, Plot.pointerX({ x: "week", y: "median", title: (d) => `week of ${doyLabel(d.week * 7)}\nmedian ${fmt1(d.median)} · 90th pct ${fmt1(d.p90)}\n${pct(d.share)} of a typical year` })),
     ],
   }));
   const win = clim.filter((d) => inWin(d.week)), share = d3.sum(win, (d) => d.share);
   const peak = clim.reduce((a, b) => (b.median > a.median ? b : a));
-  const share1 = share < 0.1 ? d3.format(".1%")(share) : pct(share);
+  const share1 = share < 0.001 ? "under 0.1%" : share < 0.1 ? d3.format(".1%")(share) : pct(share);
   $("#plan-text").innerHTML = [
     [share1, `of a typical year's burning falls in the 6 weeks from ${doyLabel(w.startWeek * 7)}`],
     [fmt(Math.round(d3.sum(win, (d) => d.median))), "expected fire cell-days in that window (median)"],
@@ -443,13 +445,15 @@ function renderPlan() {
   // county ranking (national context)
   const rows = countyOutlook(w.startWeek, w.nWeeks, to - 9, to);
   S.countyRows = rows;
-  const top = rows.slice(0, 15);
+  const top = rows.slice(0, 15), sel = S.aoi.spec.type === "county" ? S.aoi.spec.id : null;
+  const focusId = top.some((r) => r.id === sel) ? sel : top[0]?.id;
   $("#county-chart").replaceChildren(Plot.plot({
     height: 360, marginLeft: 110, x: { grid: true, label: `expected fire cell-days, 6 weeks from ${doyLabel(w.startWeek * 7)}` }, y: { domain: top.map((r) => r.name), label: null },
-    marks: [Plot.barX(top, { y: "name", x: "median", fill: css("--accent"), tip: true }), Plot.tickX(top, { y: "name", x: "p90", stroke: css("--ink"), strokeWidth: 2 }), Plot.ruleX([0])],
+    marks: [Plot.barX(top, { y: "name", x: "median", fill: (d) => (d.id === focusId ? css("--accent") : css("--c-mid")), tip: true }),
+      Plot.tickX(top, { y: "name", x: "p90", stroke: css("--c-strong"), strokeWidth: 1.5 }), Plot.ruleX([0], { stroke: css("--c-mid") })],
   }));
   $("#county-table").innerHTML = `<table><thead><tr><th>County</th><th>Rank</th><th>Median</th><th>90th pct</th><th>Worst year</th><th>Share of national</th></tr></thead><tbody>${rows.map((r, i) => `
-    <tr class="click" data-id="${r.id}"><td>${esc(r.name)}</td><td>${i + 1}</td><td>${fmt1(r.median)}</td><td>${fmt1(r.p90)}</td><td>${fmt(r.max)}</td><td>${pct(r.share)}</td></tr>`).join("")}</tbody></table>`;
+    <tr class="click" data-id="${r.id}"><td class="name">${esc(r.name)}</td><td>${i + 1}</td><td>${fmt1(r.median)}</td><td>${fmt1(r.p90)}</td><td>${fmt(r.max)}</td><td>${pct(r.share)}</td></tr>`).join("")}</tbody></table>`;
   $$("#county-table tr.click").forEach((tr) => (tr.onclick = () => setAoi({ type: "county", id: +tr.dataset.id })));
   // map: county choropleth
   const max = d3.max(rows, (r) => r.median) || 1, byId = new Map(rows.map((r) => [r.id, r]));
@@ -474,13 +478,13 @@ async function renderFires() {
   const bins = d3.bin().domain([0, 4]).thresholds(16)(ev.map((e) => Math.log10(e.pix)));
   $("#fires-hist").replaceChildren(Plot.plot({
     height: 190, marginLeft: 52, x: { label: "footprint in 375 m pixels (log scale)", tickFormat: (d) => fmt(Math.round(10 ** d)) }, y: { grid: true, type: "sqrt", label: "fires" },
-    marks: [Plot.rectY(bins, { x1: "x0", x2: "x1", y: (b) => b.length, fill: css("--viirs"), insetLeft: 1 }), Plot.ruleY([0])],
+    marks: [Plot.rectY(bins, { x1: "x0", x2: "x1", y: (b) => b.length, fill: css("--c-mid"), insetLeft: 1 }), Plot.ruleY([0], { stroke: css("--c-mid") })],
   }));
   renderFiresTable(); renderFiresCompare();
   const top = ev.filter((e) => e.n >= 3);
-  const layer = L.layerGroup(top.map((e) => L.circleMarker([e.lat, e.lon], { renderer: S.renderer, radius: Math.min(14, 2 + Math.sqrt(e.pix)), color: css("--ink"), weight: 0.5, fillColor: css("--viirs"), fillOpacity: 0.55 })
+  const layer = L.layerGroup(top.map((e) => L.circleMarker([e.lat, e.lon], { renderer: S.renderer, radius: Math.min(14, 2 + Math.sqrt(e.pix)), color: css("--accent-ink"), weight: 0.75, fillColor: css("--accent"), fillOpacity: 0.45 })
     .bindTooltip(`${isoOf(e.start)} · ${e.dur} d · ${e.n} detections · ~${fmt1(e.pix * 0.14)} km²`)));
-  setDataLayer(layer, `<span><i style="background:${css("--viirs")}"></i>Fires with 3+ detections, 2012–2025; size = footprint</span>`);
+  setDataLayer(layer, `<span><i style="background:${css("--accent")}"></i>Fires with 3 or more detections, 2012–2025, sized by footprint</span>`);
 }
 function renderFiresTable() {
   if (!S.fires) return;
@@ -509,12 +513,12 @@ async function renderHotspotLayer() {
   $("#hs-stats").textContent = "Loading…";
   const pts = (await loadHotspots(y)).filter((p) => (sensor === "all" || (sensor === "modis" ? p.sensor < 2 : p.sensor >= 2)) &&
     ((p.flags & 2) || (showStatic && (p.flags & 1 || p.type !== 0))) && S.aoi.contains(p.lat, p.lon));
-  const color = (p) => (p.flags & 2 ? d3.interpolateSinebow(((p.day % 366) / 366 + 0.6) % 1) : "#777");
+  const color = (p) => (p.flags & 2 ? css("--accent") : css("--c-mid"));
   const layer = L.layerGroup(pts.map((p) => L.circleMarker([p.lat, p.lon], { renderer: S.renderer, radius: p.sensor < 2 ? 3.2 : 1.8, weight: p.sensor < 2 ? 1 : 0, color: css("--ink"), fillColor: color(p), fillOpacity: 0.85 })
-    .bindTooltip(`${SENSOR_NAME[p.sensor]} · ${isoOf(p.day)} ${String(p.time).padStart(4, "0")} UTC · ${p.frp} MW${p.flags & 2 ? "" : " · removed (static/low confidence)"}`)));
+    .bindTooltip(`${SENSOR_NAME[p.sensor]} · ${isoOf(p.day)} ${String(p.time).padStart(4, "0")} UTC · ${p.frp.toFixed(1)} MW${p.flags & 2 ? "" : " · removed"}`)));
   const nm = pts.filter((p) => p.sensor < 2).length;
-  $("#hs-stats").textContent = `${fmt(pts.length)} hotspots in ${y} (MODIS ${fmt(nm)}, VIIRS ${fmt(pts.length - nm)}). Colour = season; grey = removed by cleaning.`;
-  setDataLayer(layer, `${MONTHS.map((m, i) => `<span><i style="background:${d3.interpolateSinebow(((i * 30.5 + 15) / 366 + 0.6) % 1)}"></i>${m}</span>`).join("")}<span>large outlined = MODIS, small = VIIRS</span>`);
+  $("#hs-stats").textContent = `${fmt(pts.length)} hotspots in ${y}: MODIS ${fmt(nm)}, VIIRS ${fmt(pts.length - nm)}`;
+  setDataLayer(layer, `<span><i style="background:${css("--accent")}"></i>Kept as vegetation fire</span><span><i style="background:${css("--c-mid")}"></i>Removed: static heat source or low confidence</span><span>Outlined dots are MODIS, small dots VIIRS</span>`);
 }
 
 /* ---------------- exports ---------------- */

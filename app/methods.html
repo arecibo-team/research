@@ -5,11 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Ember Ledger Method</title>
 <meta name="description" content="How Ember Ledger harmonizes MODIS and VIIRS active fire detections, how it is validated, and its limits.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="css/app.css">
 <style>
-  .doc { max-width: 860px; margin: 0 auto; padding: 1rem 16px 3rem; }
-  .doc h1 { font-size: 1.7rem; margin: .6rem 0 .3rem; }
-  .doc h2 { font-size: 1.15rem; margin: 1.8rem 0 .4rem; }
+  .doc { max-width: 760px; margin: 0 auto; padding: 16px 24px 64px; font-size: 15px; line-height: 24px; }
+  .doc ul { padding-left: 20px; } .doc li { margin: 4px 0; } .doc p { margin: 8px 0; }
+  .doc h1 { font-size: 28px; line-height: 36px; font-weight: 500; margin: 24px 0 4px; }
+  .doc h2 { font-size: 17px; line-height: 24px; font-weight: 500; margin: 32px 0 8px; }
   .doc p, .doc li { line-height: 1.6; }
   .doc code { font-family: var(--mono); font-size: .86em; background: var(--accent-soft); padding: 1px 5px; border-radius: 4px; }
   .doc pre { background: var(--surface); border: 1px solid var(--line); padding: .8rem; border-radius: 8px; overflow-x: auto; font-size: .8rem; }
@@ -18,7 +20,7 @@
 </head>
 <body>
 <header class="top">
-  <a class="brand" href="./"><span class="mark" aria-hidden="true"></span><span><strong>Ember Ledger</strong><span class="tag">Method and validation</span></span></a>
+  <a class="brand" href="./"><span class="logo" aria-hidden="true"><i></i><i></i></span><strong>Ember Ledger</strong><span class="tag">Method and validation</span></a>
   <nav id="tabs"><a href="./">← Back to the app</a></nav>
 </header>
 <div class="doc">
@@ -117,10 +119,10 @@ fetch("data/meta.json").then((r) => r.json()).then((m) => {
   document.getElementById("mape").textContent = m.loyo_mape_pct + "%";
   const M = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
   document.getElementById("ratio").append(Plot.plot({ height: 200, marginLeft: 40, x: { domain: M, label: null }, y: { grid: true, label: "VIIRS ÷ MODIS cell-days" },
-    marks: [Plot.barY(m.ratio_by_month.map((v, i) => ({ m: M[i], v })), { x: "m", y: "v", fill: css("--viirs"), tip: true }), Plot.ruleY([0])] }));
+    marks: [Plot.barY(m.ratio_by_month.map((v, i) => ({ m: M[i], v })), { x: "m", y: "v", fill: css("--c-mid"), tip: true }), Plot.ruleY([0])] }));
   const rows = m.loyo.flatMap((d) => [{ y: String(d.year), k: "observed (VIIRS)", v: d.observed }, { y: String(d.year), k: "predicted from MODIS", v: d.predicted }]);
   document.getElementById("loyo").append(Plot.plot({ height: 230, marginLeft: 56, fx: { label: null }, x: { axis: null }, y: { grid: true, label: "fire cell-days" },
-    color: { domain: ["observed (VIIRS)", "predicted from MODIS"], range: [css("--viirs"), css("--modis")], legend: true },
+    color: { domain: ["observed (VIIRS)", "predicted from MODIS"], range: [css("--c-strong"), css("--c-soft")], legend: true },
     marks: [Plot.barY(rows, { fx: "y", x: "k", y: "v", fill: "k", tip: true }), Plot.ruleY([0])] }));
 }).catch((e) => { document.getElementById("gen").textContent = "Could not load data/meta.json: " + e.message; });
 </script>

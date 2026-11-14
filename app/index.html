@@ -7,13 +7,16 @@
 <meta name="description" content="25 years of satellite fire data, harmonized across MODIS and VIIRS: burning calendar, anomalies, recurring burn sites and resource planning for any area in Romania.">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
 <header class="top">
   <a class="brand" href="#">
-    <span class="mark" aria-hidden="true"></span>
-    <span><strong>Ember Ledger</strong><span class="tag">25 years of fire, one consistent record</span></span>
+    <span class="logo" aria-hidden="true"><i></i><i></i></span>
+    <strong>Ember Ledger</strong><span class="tag">Fire history and outlook for Romania, 2000–2025</span>
   </a>
   <nav id="tabs" aria-label="Views">
     <a href="#explore" data-tab="explore">Calendar</a>
@@ -29,22 +32,25 @@
   <aside class="side">
     <div class="aoi card">
       <div class="aoi-head">
-        <div><span class="kicker">Area</span><h1 id="aoi-name">All of Romania</h1><span class="hint" id="aoi-stats"></span></div>
-        <button id="btn-share" class="ghost small" title="Copy a link to this exact view">Copy link</button>
+        <div><span class="kicker">Area</span><h1 id="aoi-name">All of Romania</h1></div>
+        <button id="btn-share" class="small" title="Copy a link to this exact view">Copy link</button>
+        <span class="stats" id="aoi-stats"></span>
       </div>
-      <div class="aoi-tools">
-        <label class="grow">County
-          <select id="sel-county"><option value="ro">All of Romania</option></select></label>
-        <div class="draw-btns" role="group" aria-label="Draw an area">
-          <button id="btn-rect" class="small">Draw box</button>
-          <button id="btn-poly" class="small">Draw shape</button>
+      <div class="field">
+        <span>County or drawn area</span>
+        <div class="row">
+          <select id="sel-county" class="grow" aria-label="County"><option value="ro">All of Romania</option></select>
+          <span class="draw-btns" role="group" aria-label="Draw an area"><button id="btn-rect" class="small">Draw box</button> <button id="btn-poly" class="small">Draw shape</button></span>
         </div>
       </div>
-      <form id="form-circle" class="aoi-tools">
-        <label>Lat <input id="in-lat" type="number" step="0.001" min="43" max="48.5" placeholder="45.15"></label>
-        <label>Lon <input id="in-lon" type="number" step="0.001" min="20" max="30" placeholder="29.4"></label>
-        <label>km <input id="in-r" type="number" step="1" min="1" max="200" value="25"></label>
-        <button class="small" type="submit">Go</button>
+      <form id="form-circle" class="field">
+        <span>Point and radius</span>
+        <div class="point">
+          <label>Latitude <input id="in-lat" type="number" step="0.001" min="43" max="48.5" placeholder="45.150"></label>
+          <label>Longitude <input id="in-lon" type="number" step="0.001" min="20" max="30" placeholder="29.400"></label>
+          <label>Radius, km <input id="in-r" type="number" step="1" min="1" max="200" value="25"></label>
+          <button class="small" type="submit">Show</button>
+        </div>
       </form>
       <div class="presets" id="presets"></div>
     </div>
@@ -80,20 +86,20 @@
       <div class="grid2">
         <article class="card">
           <h2>Year by year</h2>
-          <p class="hint">Harmonized fire cell-days with the local error band for modelled years; dashed line = raw sensors stitched together.</p>
+          <p class="hint">Harmonized fire cell-days. <span class="src"></span>modelled from MODIS, with the local error band · <span class="src obs"></span>observed by VIIRS · dashed: raw sensors stitched</p>
           <div id="yearly" class="chart"></div>
           <div id="sats" class="chart"></div>
           <p class="hint" id="trend-text"></p>
         </article>
         <article class="card">
           <h2>This year against every other year</h2>
-          <p class="hint">Cumulative activity by day of year. Grey = past years, band = middle 80%, line = median.</p>
+          <p class="hint">Cumulative activity by day of year: past years in grey, middle 80% shaded, median dashed</p>
           <div id="spaghetti" class="chart"></div>
         </article>
       </div>
       <article class="card">
         <h2>Is the fire season moving?</h2>
-        <p class="hint">Each bar spans the days between 10% and 90% of the year's activity; the dot is the midpoint.</p>
+        <p class="hint">Each bar runs from 10% to 90% of the year's activity, the dot marks the halfway point</p>
         <div id="season" class="chart"></div>
         <p class="hint" id="season-text"></p>
       </article>
@@ -103,12 +109,12 @@
     <section class="tab" id="tab-prevent">
       <article class="card">
         <h2>Places that burn almost every year</h2>
-        <p class="hint">2 km cells by number of years with fire, 2012–2025 (VIIRS, vegetation fires only). The map shows the same.</p>
+        <p class="hint">2 km cells by number of years with fire, 2012–2025, VIIRS vegetation fires only. Cells that burned in at least half the years are highlighted, here and on the map.</p>
         <div id="recur-summary" class="kpis"></div>
         <div id="recur-chart" class="chart"></div>
       </article>
       <article class="card">
-        <h2>Does it predict next year? Backtest</h2>
+        <h2>Does past burning predict later fires?</h2>
         <div class="controls">
           <label>Pick cells that burned in at least <input id="in-k" type="number" min="1" max="8" value="5"> of 8 years (2012–2019)</label>
         </div>
@@ -116,12 +122,12 @@
       </article>
       <article class="card">
         <h2>Priority list: where and when to prevent</h2>
-        <p class="hint">Top recurring places in this area with their usual window (middle half of fire days). Click a row to zoom.</p>
+        <p class="hint">Recurring places in this area with their usual window, the middle half of their fire days. Select a row to zoom the map.</p>
         <div id="recur-table" class="table-wrap"></div>
       </article>
       <article class="card">
         <h2>Human fingerprint</h2>
-        <p class="hint">Fire days by weekday (VIIRS, 2012–2025). Lightning is rare in Romania; a weekly rhythm points to people.</p>
+        <p class="hint">Fire days by weekday, VIIRS 2012–2025. Lightning is rare in Romania, so a weekly rhythm points to people.</p>
         <div id="weekday" class="chart"></div>
       </article>
     </section>
@@ -136,14 +142,14 @@
             <label>From <input id="plan-date" type="date" min="2026-01-01" max="2026-12-31"></label>
           </div>
         </div>
-        <p class="hint">Expected harmonized fire cell-days per week in this area: median, and the 90th percentile as a planning ceiling.</p>
+        <p class="hint">Expected fire cell-days per week in this area: bars show the median, ticks the 90th percentile as a planning ceiling</p>
         <div id="plan-curve" class="chart"></div>
         <div id="plan-text" class="kpis"></div>
       </article>
       <article class="card">
         <h2>Where to pre-position crews</h2>
-        <p class="hint">Counties ranked by expected activity in the next 6 weeks from the chosen date, from the same weeks in 2016–2025 (VIIRS observed).
-          A planning aid based on fire history, not a dispatch system.</p>
+        <p class="hint">Counties ranked by expected activity in the 6 weeks from the chosen date, from the same weeks in 2016–2025.
+          A planning aid built from fire history, not a dispatch system.</p>
         <div id="county-chart" class="chart"></div>
         <div id="county-table" class="table-wrap"></div>
       </article>
@@ -153,7 +159,7 @@
     <section class="tab" id="tab-fires">
       <article class="card">
         <h2>Fires, not dots</h2>
-        <p class="hint">VIIRS detections within ~750 m on the same or the next day are grouped into one fire (2012–2025). Footprint is approximate.</p>
+        <p class="hint">VIIRS detections within about 750 m on the same or the next day count as one fire, 2012–2025. Footprints are approximate.</p>
         <div id="fires-summary" class="kpis"></div>
         <div id="fires-hist" class="chart"></div>
       </article>
@@ -178,7 +184,7 @@
         <div class="controls">
           <label>Year <select id="hs-year"></select></label>
           <div class="seg" id="hs-sensor" role="group" aria-label="Sensor"><button data-v="all" class="on">All</button><button data-v="modis">MODIS</button><button data-v="viirs">VIIRS</button></div>
-          <label><input type="checkbox" id="hs-static"> show removed (static heat sources)</label>
+          <label><input type="checkbox" id="hs-static" style="height:auto"> Show removed points</label>
         </div>
         <p class="hint" id="hs-stats"></p>
       </article>
@@ -194,17 +200,16 @@
           <button id="ex-fires">Fires CSV</button>
         </div>
         <p class="hint" id="ex-status"></p>
-        <p class="hint">Hotspots include every FIRMS record in the area with sensor, confidence, FRP, type and whether our cleaning kept it.
-          Data stops at 31 Dec 2025: FIRMS country archives for 2026 are not published yet. See <a href="methods.html#nrt">how to add 2026</a>.</p>
+        <p class="hint">The hotspot file has every FIRMS record in the area with sensor, confidence, FRP, type and whether our cleaning kept it.
+          Data ends on 31 Dec 2025 because FIRMS has not published the 2026 archive yet. <a href="methods.html#nrt">How to add 2026</a></p>
       </article>
     </section>
   </main>
 </div>
 
 <footer class="foot">
-  NASA FIRMS MODIS &amp; VIIRS · counties: geoBoundaries (CC BY 4.0) · basemap © Esri, OpenStreetMap contributors ·
-  <a href="methods.html">Method &amp; validation</a> · <a href="../showcase/">Research showcase</a> ·
-  Built for NASA Space Apps 2026 with help from an AI assistant (Claude), disclosed in the README.
+  <span>Data: NASA FIRMS MODIS and VIIRS · Counties: geoBoundaries, CC BY 4.0 · Basemap: Esri, OpenStreetMap contributors</span>
+  <span><a href="methods.html">Method and validation</a> · <a href="../showcase/">Research</a> · NASA Space Apps 2026 · Code written with an AI assistant, see README</span>
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
